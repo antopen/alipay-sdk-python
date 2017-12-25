@@ -5,11 +5,12 @@ Created on 2017-12-20
 @author: liuqun
 '''
 import datetime
+import uuid
 
+from alipay.aop.api.constant.ParamConstants import *
 from alipay.aop.api.util.WebUtils import *
 from alipay.aop.api.util.SignatureUtils import *
 from alipay.aop.api.util.CommonUtils import *
-import uuid
 
 
 class DefaultAlipayClient(object):
@@ -85,16 +86,17 @@ class DefaultAlipayClient(object):
                 signEndIndex = m2.end()
 
         responseContent = responseStr[m1.end() - 1:signStartIndex + 1]
+        if PYTHON_VERSION_3:
+            responseContent = responseContent.encode(self.__configs[P_CHARSET])
         sign = responseStr[signEndIndex:responseStr.find("\"", signEndIndex)]
         try:
-            verifyRes = verifyWithRSA(self.__configs[P_ALIPAY_PUBLIC_KEY], responseContent, sign,
-                                      self.__configs[P_CHARSET])
+            verifyRes = verifyWithRSA(self.__configs[P_ALIPAY_PUBLIC_KEY], responseContent, sign)
         except Exception as e:
             raise ResponseException('[' + THREAD_LOCAL.uuid + ']response sign verify failed. ' + str(e) + \
                                     ' ' + responseStr)
         if not verifyRes:
             raise ResponseException('[' + THREAD_LOCAL.uuid + ']response sign verify failed. ' + responseStr)
-        return responseContent
+        return responseContent.decode(self.__configs[P_CHARSET])
 
 
     def execute(self, method, params):
@@ -118,24 +120,32 @@ class DefaultAlipayClient(object):
         allParams = dict()
         allParams.update(params)
         allParams.update(commonParams)
-        signContent = getSignContent(allParams, self.__configs[P_CHARSET])
+        signContent = getSignContent(allParams)
+        signContentStr = signContent
+        if PYTHON_VERSION_3:
+            signContent = signContent.encode(self.__configs[P_CHARSET])
         try:
-            if hasValuableKey(self.__configs, P_SIGN_TYPE) and self.__configs[P_SIGN_TYPE]  == 'RSA2':
+            if hasValuableKey(self.__configs, P_SIGN_TYPE) and self.__configs[P_SIGN_TYPE] == 'RSA2':
                 sign = signWithRSA2(self.__configs[P_APP_PRIVATE_KEY], signContent)
             else:
                 sign = signWithRSA(self.__configs[P_APP_PRIVATE_KEY], signContent)
         except Exception as e:
             raise RequestException('[' + THREAD_LOCAL.uuid + ']request sign failed. ' + str(e))
+        if PYTHON_VERSION_3:
+            sign = str(sign, encoding=self.__configs[P_CHARSET])
 
         commonParams[P_SIGN] = sign
 
         queryString = urlencode(commonParams, self.__configs[P_CHARSET])
         self.removeCommonParams(params)
 
-        logUrl = self.__configs[P_SERVER_URL] + '?' + signContent
+        logUrl = self.__configs[P_SERVER_URL] + '?' + signContentStr
         THREAD_LOCAL.logger.info('[' + THREAD_LOCAL.uuid + ']request:' + logUrl)
 
-        response = post(self.__configs[P_SERVER_URL], queryString, headers, params, self.__configs[P_TIMEOUT])
+        response = post(self.__configs[P_SERVER_URL], queryString, headers, params, self.__configs[P_CHARSET],
+                        self.__configs[P_TIMEOUT])
+        if PYTHON_VERSION_3:
+             response = response.decode(self.__configs[P_CHARSET])
         THREAD_LOCAL.logger.info('[' + THREAD_LOCAL.uuid + ']response:' + response)
         return self.parseResponse(response)
 

@@ -5,7 +5,6 @@ Created on 2017-12-20
 @author: liuqun
 '''
 
-from alipay.aop.api.util.StringUtils import *
 
 class AopException(Exception):
     def __init__(self):
@@ -24,6 +23,7 @@ class AopException(Exception):
 
 class RequestException(Exception):
     pass
+
 
 class ResponseException(Exception):
     pass

@@ -23,8 +23,6 @@ except ImportError:
 import mimetypes
 
 from alipay.aop.api.exception.Exception import *
-from alipay.aop.api.constant.ParamConstants import *
-from alipay.aop.api.util.CommonUtils import *
 
 
 class FileItem(object):
@@ -61,20 +59,23 @@ def urlencode(params, charset):
         value = v
         if not isinstance(value, str):
             value = json.dumps(value, ensure_ascii=False)
-        value = quote_plus(value)
+        if PYTHON_VERSION_3:
+            value = quote_plus(value, encoding=charset)
+        else:
+            value = quote_plus(value)
         queryString += ("&" + k + "=" + value)
     queryString = queryString[1:]
     return queryString
 
 
-def post(url, queryString=None, headers=None, params=None, timeout=15):
+def post(url, queryString=None, headers=None, params=None, charset='utf-8', timeout=15):
     urlParseResult = urlparse.urlparse(url)
     host = urlParseResult.hostname
     port = 80
-    connection = httplib.HTTPConnection(host, port, False, timeout)
+    connection = httplib.HTTPConnection(host=host, port=port, timeout=timeout)
     if url.find("https") == 0:
         port = 443
-        connection = httplib.HTTPSConnection(host, port, False, timeout)
+        connection = httplib.HTTPSConnection(host=host, port=port, timeout=timeout)
     url = urlParseResult.scheme + "://" + urlParseResult.hostname
     if urlParseResult.port:
         url += urlParseResult.port
@@ -86,9 +87,6 @@ def post(url, queryString=None, headers=None, params=None, timeout=15):
     except Exception as e:
         raise RequestException('[' + THREAD_LOCAL.uuid + ']post connect failed. ' + str(e))
     body = None
-    charset = 'utf-8'
-    if hasValuableKey(params, P_CHARSET):
-        charset = params["charset"]
     if params:
         body = urlencode(params, charset)
     try:

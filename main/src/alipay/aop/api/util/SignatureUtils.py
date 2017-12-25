@@ -11,7 +11,7 @@ import rsa
 from alipay.aop.api.util.StringUtils import *
 
 
-def getSignContent(allParams, charset):
+def getSignContent(allParams):
     signContent = ""
     for (k, v) in sorted(allParams.items()):
         value = v
@@ -19,7 +19,8 @@ def getSignContent(allParams, charset):
             value = json.dumps(value, ensure_ascii=False)
         signContent += ("&" + k + "=" + value)
     signContent = signContent[1:]
-    return signContent.encode(charset)
+    return signContent
+
 
 def fillPrivateKeyMarker(privateKey):
     return addStartEnd(privateKey, "-----BEGIN RSA PRIVATE KEY-----\n", "\n-----END RSA PRIVATE KEY-----")
