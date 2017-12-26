@@ -54,11 +54,11 @@ class MultiPartForm(object):
         self.form_fields.append((name, value))
         return
 
-    def add_file(self, fieldname, filename, fileContent, mimetype=None):
+    def add_file(self, field_name, file_name, file_content, mimetype=None):
         """Add a file to be uploaded."""
         if mimetype is None:
-            mimetype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
-        self.files.append((fieldname, filename, mimetype, fileContent))
+            mimetype = mimetypes.guess_type(file_name)[0] or 'application/octet-stream'
+        self.files.append((field_name, file_name, mimetype, file_content))
         return
 
     def build_body(self):
@@ -104,8 +104,8 @@ class MultiPartForm(object):
         return bytes('\r\n'.encode(self.charset)).join(flattened)
 
 
-def urlencode(params, charset):
-    queryString = ""
+def url_encode(params, charset):
+    query_string = ""
     for (k, v) in params.items():
         value = v
         if not isinstance(value, str):
@@ -114,29 +114,29 @@ def urlencode(params, charset):
             value = quote_plus(value, encoding=charset)
         else:
             value = quote_plus(value)
-        queryString += ("&" + k + "=" + value)
-    queryString = queryString[1:]
-    return queryString
+        query_string += ("&" + k + "=" + value)
+    query_string = query_string[1:]
+    return query_string
 
 
-def getHttpConnection(url, queryString, timeout):
-    urlParseResult = urlparse.urlparse(url)
-    host = urlParseResult.hostname
+def get_http_connection(url, query_string, timeout):
+    url_parse_result = urlparse.urlparse(url)
+    host = url_parse_result.hostname
     port = 80
     connection = httplib.HTTPConnection(host=host, port=port, timeout=timeout)
     if url.find("https") == 0:
         port = 443
         connection = httplib.HTTPSConnection(host=host, port=port, timeout=timeout)
-    url = urlParseResult.scheme + "://" + urlParseResult.hostname
-    if urlParseResult.port:
-        url += urlParseResult.port
-    url += urlParseResult.path
-    url += ('?' + queryString)
-    return (url, connection)
+    url = url_parse_result.scheme + "://" + url_parse_result.hostname
+    if url_parse_result.port:
+        url += url_parse_result.port
+    url += url_parse_result.path
+    url += ('?' + query_string)
+    return url, connection
 
 
-def post(url, queryString=None, headers=None, params=None, charset='utf-8', timeout=15):
-    url, connection = getHttpConnection(url, queryString, timeout)
+def post(url, query_string=None, headers=None, params=None, charset='utf-8', timeout=15):
+    url, connection = get_http_connection(url, query_string, timeout)
 
     try:
         connection.connect()
@@ -144,7 +144,7 @@ def post(url, queryString=None, headers=None, params=None, charset='utf-8', time
         raise RequestException('[' + THREAD_LOCAL.uuid + ']post connect failed. ' + str(e))
     body = None
     if params:
-        body = urlencode(params, charset)
+        body = url_encode(params, charset)
     try:
         connection.request("POST", url, body=body, headers=headers)
     except Exception as e:
@@ -162,8 +162,8 @@ def post(url, queryString=None, headers=None, params=None, charset='utf-8', time
     return result
 
 
-def multipartPost(url, queryString=None, headers=None, params=None, multipartParams=None, charset='utf-8', timeout=30):
-    url, connection = getHttpConnection(url, queryString, timeout)
+def multipart_post(url, query_string=None, headers=None, params=None, multipart_params=None, charset='utf-8', timeout=30):
+    url, connection = get_http_connection(url, query_string, timeout)
 
     try:
         connection.connect()
@@ -173,10 +173,10 @@ def multipartPost(url, queryString=None, headers=None, params=None, multipartPar
     form = MultiPartForm(charset)
     for key, value in params.items():
         form.add_field(key, value)
-    for key, value in multipartParams.items():
-        fileItem = value
-        if (fileItem and isinstance(fileItem, FileItem)):
-            form.add_file(key, fileItem.filename, fileItem.content)
+    for key, value in multipart_params.items():
+        file_item = value
+        if file_item and isinstance(file_item, FileItem):
+            form.add_file(key, file_item.filename, file_item.content)
     body = form.build_body()
     if not headers:
         headers = {}

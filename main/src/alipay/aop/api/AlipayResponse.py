@@ -9,16 +9,16 @@ import json
 
 class AlipayResponse(object):
 
-    def __init__(self, responseStr=None):
-        if not responseStr:
+    def __init__(self, response_str=None):
+        if not response_str:
             self.code = ""
             self.msg = ""
             self.sub_code = ""
             self.sub_msg = ""
-            self.responseStr = ""
+            self.response_str = ""
         else:
-            self.responseStr = responseStr
-            responseJson = json.loads(responseStr)
+            self.response_str = response_str
+            responseJson = json.loads(response_str)
             self.code = responseJson["code"]
             self.msg = responseJson["msg"]
             if responseJson["sub_code"]:
@@ -26,17 +26,17 @@ class AlipayResponse(object):
             if responseJson["sub_msg"]:
                 self.sub_msg = responseJson["sub_msg"]
 
-    def getCode(self):
+    def get_code(self):
         return self.code
 
-    def getMsg(self):
+    def get_msg(self):
         return self.msg
 
-    def getSubCode(self):
+    def get_sub_code(self):
         return self.sub_code
 
-    def getSubMsg(self):
+    def get_sub_msg(self):
         return self.sub_msg
 
-    def getResponseStr(self):
-        return self.responseStr
+    def get_response_str(self):
+        return self.response_str

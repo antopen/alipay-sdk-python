@@ -6,7 +6,7 @@ Created on 2017-12-20
 '''
 
 
-def addStartEnd(key, startMarker, endMarker):
+def add_start_end(key, startMarker, endMarker):
     if key.find(startMarker) < 0:
         key = startMarker + key
     if key.find(endMarker) < 0:

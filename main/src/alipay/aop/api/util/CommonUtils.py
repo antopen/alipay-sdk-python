@@ -6,7 +6,7 @@ Created on 2017-12-20
 '''
 
 
-def hasValuableKey(map, key):
+def has_value(map, key):
     if not map:
         return False
     if not (key in map):

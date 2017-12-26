@@ -31,36 +31,36 @@ class DefaultAlipayClient(object):
         }
         '''
         self.__configs = configs
-        if not hasValuableKey(self.__configs, P_CHARSET):
+        if not has_value(self.__configs, P_CHARSET):
             self.__configs[P_CHARSET] = "utf-8"
         else:
             self.__configs[P_CHARSET] = self.__configs[P_CHARSET].lower()
-        if not hasValuableKey(self.__configs, P_TIMEOUT):
+        if not has_value(self.__configs, P_TIMEOUT):
             self.__configs[P_TIMEOUT] = 15
         self.__configs[P_FORMAT] = "json"
         self.__configs[P_VERSION] = "1.0"
         self.__logger = logger
 
     def get_common_params(self, params):
-        commonParams = dict()
-        commonParams[P_TIMESTAMP] = params[P_TIMESTAMP]
-        commonParams[P_APP_ID] = self.__configs[P_APP_ID]
-        commonParams[P_METHOD] = params[P_METHOD]
-        commonParams[P_CHARSET] = self.__configs[P_CHARSET]
-        commonParams[P_FORMAT] = self.__configs[P_FORMAT]
-        commonParams[P_VERSION] = self.__configs[P_VERSION]
-        commonParams[P_SIGN_TYPE] = self.__configs[P_SIGN_TYPE]
-        if hasValuableKey(self.__configs, P_ENCRYPT_TYPE):
-            commonParams[P_ENCRYPT_TYPE] = self.__configs[P_ENCRYPT_TYPE]
-        if hasValuableKey(params, P_APP_AUTH_TOKEN):
-            commonParams[P_APP_AUTH_TOKEN] = params[P_APP_AUTH_TOKEN]
-        if hasValuableKey(params, P_AUTH_TOKEN):
-            commonParams[P_AUTH_TOKEN] = params[P_AUTH_TOKEN]
-        if hasValuableKey(params, P_NOTIFY_URL):
-            commonParams[P_NOTIFY_URL] = params[P_NOTIFY_URL]
-        if hasValuableKey(params, P_RETURN_URL):
-            commonParams[P_RETURN_URL] = params[P_RETURN_URL]
-        return commonParams
+        common_params = dict()
+        common_params[P_TIMESTAMP] = params[P_TIMESTAMP]
+        common_params[P_APP_ID] = self.__configs[P_APP_ID]
+        common_params[P_METHOD] = params[P_METHOD]
+        common_params[P_CHARSET] = self.__configs[P_CHARSET]
+        common_params[P_FORMAT] = self.__configs[P_FORMAT]
+        common_params[P_VERSION] = self.__configs[P_VERSION]
+        common_params[P_SIGN_TYPE] = self.__configs[P_SIGN_TYPE]
+        if has_value(self.__configs, P_ENCRYPT_TYPE):
+            common_params[P_ENCRYPT_TYPE] = self.__configs[P_ENCRYPT_TYPE]
+        if has_value(params, P_APP_AUTH_TOKEN):
+            common_params[P_APP_AUTH_TOKEN] = params[P_APP_AUTH_TOKEN]
+        if has_value(params, P_AUTH_TOKEN):
+            common_params[P_AUTH_TOKEN] = params[P_AUTH_TOKEN]
+        if has_value(params, P_NOTIFY_URL):
+            common_params[P_NOTIFY_URL] = params[P_NOTIFY_URL]
+        if has_value(params, P_RETURN_URL):
+            common_params[P_RETURN_URL] = params[P_RETURN_URL]
+        return common_params
 
     def remove_common_params(self, params):
         if not params:
@@ -69,31 +69,31 @@ class DefaultAlipayClient(object):
             if k in params:
                 params.pop(k)
 
-    def parse_response(self, responseStr):
-        m1 = PATTERN_RESPONSE_BEGIN.search(responseStr)
-        m2 = PATTERN_RESPONSE_SIGN_BEGIN.search(responseStr)
+    def parse_response(self, response_str):
+        m1 = PATTERN_RESPONSE_BEGIN.search(response_str)
+        m2 = PATTERN_RESPONSE_SIGN_BEGIN.search(response_str)
         if (not m1) or (not m2):
-            raise ResponseException('[' + THREAD_LOCAL.uuid + ']response shape maybe illegal. ' + responseStr)
-        signStartIndex = m2.start()
-        signEndIndex = m2.end()
+            raise ResponseException('[' + THREAD_LOCAL.uuid + ']response shape maybe illegal. ' + response_str)
+        sign_start_index = m2.start()
+        sign_end_index = m2.end()
         while m2:
-            m2 = PATTERN_RESPONSE_SIGN_BEGIN.search(responseStr, pos=m2.end())
+            m2 = PATTERN_RESPONSE_SIGN_BEGIN.search(response_str, pos=m2.end())
             if m2:
-                signStartIndex = m2.start()
-                signEndIndex = m2.end()
+                sign_start_index = m2.start()
+                sign_end_index = m2.end()
 
-        responseContent = responseStr[m1.end() - 1:signStartIndex + 1]
+        response_content = response_str[m1.end() - 1:sign_start_index + 1]
         if PYTHON_VERSION_3:
-            responseContent = responseContent.encode(self.__configs[P_CHARSET])
-        sign = responseStr[signEndIndex:responseStr.find("\"", signEndIndex)]
+            response_content = response_content.encode(self.__configs[P_CHARSET])
+        sign = response_str[sign_end_index:response_str.find("\"", sign_end_index)]
         try:
-            verifyRes = verifyWithRSA(self.__configs[P_ALIPAY_PUBLIC_KEY], responseContent, sign)
+            verify_res = verify_with_rsa(self.__configs[P_ALIPAY_PUBLIC_KEY], response_content, sign)
         except Exception as e:
             raise ResponseException('[' + THREAD_LOCAL.uuid + ']response sign verify failed. ' + str(e) + \
-                                    ' ' + responseStr)
-        if not verifyRes:
-            raise ResponseException('[' + THREAD_LOCAL.uuid + ']response sign verify failed. ' + responseStr)
-        return responseContent.decode(self.__configs[P_CHARSET])
+                                    ' ' + response_str)
+        if not verify_res:
+            raise ResponseException('[' + THREAD_LOCAL.uuid + ']response sign verify failed. ' + response_str)
+        return response_content.decode(self.__configs[P_CHARSET])
 
     def build_form(self, url, params):
         form = "<form name=\"punchout_form\" method=\"post\" action=\""
@@ -120,37 +120,37 @@ class DefaultAlipayClient(object):
         params[P_TIMESTAMP] = timestamp
         params[P_METHOD] = method
 
-        commonParams = self.get_common_params(params)
+        common_params = self.get_common_params(params)
 
-        allParams = dict()
-        allParams.update(params)
-        allParams.update(commonParams)
-        signContent = getSignContent(allParams)
-        signContentStr = signContent
+        all_params = dict()
+        all_params.update(params)
+        all_params.update(common_params)
+        sign_content = get_sign_content(all_params)
+        sign_content_str = sign_content
         if PYTHON_VERSION_3:
-            signContent = signContent.encode(self.__configs[P_CHARSET])
+            sign_content = sign_content.encode(self.__configs[P_CHARSET])
         try:
-            if hasValuableKey(self.__configs, P_SIGN_TYPE) and self.__configs[P_SIGN_TYPE] == 'RSA2':
-                sign = signWithRSA2(self.__configs[P_APP_PRIVATE_KEY], signContent)
+            if has_value(self.__configs, P_SIGN_TYPE) and self.__configs[P_SIGN_TYPE] == 'RSA2':
+                sign = sign_with_rsa2(self.__configs[P_APP_PRIVATE_KEY], sign_content)
             else:
-                sign = signWithRSA(self.__configs[P_APP_PRIVATE_KEY], signContent)
+                sign = sign_with_rsa(self.__configs[P_APP_PRIVATE_KEY], sign_content)
         except Exception as e:
             raise RequestException('[' + THREAD_LOCAL.uuid + ']request sign failed. ' + str(e))
         if PYTHON_VERSION_3:
             sign = str(sign, encoding=self.__configs[P_CHARSET])
 
-        commonParams[P_SIGN] = sign
+        common_params[P_SIGN] = sign
 
-        queryString = urlencode(commonParams, self.__configs[P_CHARSET])
+        query_string = url_encode(common_params, self.__configs[P_CHARSET])
         self.remove_common_params(params)
 
-        logUrl = self.__configs[P_SERVER_URL] + '?' + signContentStr
-        THREAD_LOCAL.logger.info('[' + THREAD_LOCAL.uuid + ']request:' + logUrl)
-        return (queryString, params)
+        log_url = self.__configs[P_SERVER_URL] + '?' + sign_content_str
+        THREAD_LOCAL.logger.info('[' + THREAD_LOCAL.uuid + ']request:' + log_url)
+        return query_string, params
 
     def after(self, response):
         if PYTHON_VERSION_3:
-             response = response.decode(self.__configs[P_CHARSET])
+            response = response.decode(self.__configs[P_CHARSET])
         THREAD_LOCAL.logger.info('[' + THREAD_LOCAL.uuid + ']response:' + response)
         return self.parse_response(response)
 
@@ -164,14 +164,14 @@ class DefaultAlipayClient(object):
             "log-uuid": THREAD_LOCAL.uuid,
         }
 
-        queryString, params = self.prepare(method, params)
+        query_string, params = self.prepare(method, params)
 
-        response = post(self.__configs[P_SERVER_URL], queryString, headers, params, self.__configs[P_CHARSET],
+        response = post(self.__configs[P_SERVER_URL], query_string, headers, params, self.__configs[P_CHARSET],
                         self.__configs[P_TIMEOUT])
 
         return self.after(response)
 
-    def multipart_execute(self, method, params, multipartParams):
+    def multipart_execute(self, method, params, multipart_params):
         THREAD_LOCAL.uuid = str(uuid.uuid1())
         headers = {
             "Cache-Control": "no-cache",
@@ -180,10 +180,10 @@ class DefaultAlipayClient(object):
             "log-uuid": THREAD_LOCAL.uuid,
         }
 
-        queryString, params = self.prepare(method, params)
+        query_string, params = self.prepare(method, params)
 
-        response = multipartPost(self.__configs[P_SERVER_URL], queryString, headers, params, multipartParams,
-                                 self.__configs[P_CHARSET], self.__configs[P_TIMEOUT])
+        response = multipart_post(self.__configs[P_SERVER_URL], query_string, headers, params, multipart_params,
+                                  self.__configs[P_CHARSET], self.__configs[P_TIMEOUT])
 
         return self.after(response)
 
@@ -194,9 +194,9 @@ class DefaultAlipayClient(object):
         if pos >= 0:
             url = url[0:pos]
 
-        queryString, params = self.prepare(method, params)
+        query_string, params = self.prepare(method, params)
 
         if http_method == "GET":
-            return url + "?" + queryString + "&" + urlencode(params, self.__configs[P_CHARSET])
+            return url + "?" + query_string + "&" + url_encode(params, self.__configs[P_CHARSET])
         else:
-            return self.build_form(url + "?" + queryString, params)
+            return self.build_form(url + "?" + query_string, params)
