@@ -41,8 +41,7 @@ class DefaultAlipayClient(object):
         self.__configs[P_VERSION] = "1.0"
         self.__logger = logger
 
-
-    def getCommonParams(self, params):
+    def get_common_params(self, params):
         commonParams = dict()
         commonParams[P_TIMESTAMP] = params[P_TIMESTAMP]
         commonParams[P_APP_ID] = self.__configs[P_APP_ID]
@@ -63,16 +62,14 @@ class DefaultAlipayClient(object):
             commonParams[P_RETURN_URL] = params[P_RETURN_URL]
         return commonParams
 
-
-    def removeCommonParams(self, params):
+    def remove_common_params(self, params):
         if not params:
             return
         for k in COMMON_PARAM_KEYS:
             if k in params:
                 params.pop(k)
 
-
-    def parseResponse(self, responseStr):
+    def parse_response(self, responseStr):
         m1 = PATTERN_RESPONSE_BEGIN.search(responseStr)
         m2 = PATTERN_RESPONSE_SIGN_BEGIN.search(responseStr)
         if (not m1) or (not m2):
@@ -98,24 +95,32 @@ class DefaultAlipayClient(object):
             raise ResponseException('[' + THREAD_LOCAL.uuid + ']response sign verify failed. ' + responseStr)
         return responseContent.decode(self.__configs[P_CHARSET])
 
+    def build_form(self, url, params):
+        form = "<form name=\"punchout_form\" method=\"post\" action=\""
+        form += url
+        form += "\">\n"
+        if params:
+            for k, v in params.items():
+                if not v:
+                    continue
+                form += "<input type=\"hidden\" name=\""
+                form += k
+                form += "\" value=\""
+                form += (json.dumps(v, ensure_ascii=False)).replace("\"", "&quot;")
+                form += "\">\n"
+        form += "<input type=\"submit\" value=\"立即支付\" style=\"display:none\" >\n"
+        form += "</form>\n"
+        form += "<script>document.forms[0].submit();</script>"
+        return form
 
-    def execute(self, method, params):
-        THREAD_LOCAL.uuid = str(uuid.uuid1())
+    def prepare(self, method, params):
         THREAD_LOCAL.logger = self.__logger
-
-        headers = {
-            'Content-type': 'application/x-www-form-urlencoded;charset=' + self.__configs[P_CHARSET],
-            "Cache-Control": "no-cache",
-            "Connection": "Keep-Alive",
-            "User-Agent": ALIPAY_SDK_PYTHON_VERSION,
-            "log-uuid": THREAD_LOCAL.uuid,
-        }
 
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         params[P_TIMESTAMP] = timestamp
         params[P_METHOD] = method
 
-        commonParams = self.getCommonParams(params)
+        commonParams = self.get_common_params(params)
 
         allParams = dict()
         allParams.update(params)
@@ -137,17 +142,61 @@ class DefaultAlipayClient(object):
         commonParams[P_SIGN] = sign
 
         queryString = urlencode(commonParams, self.__configs[P_CHARSET])
-        self.removeCommonParams(params)
+        self.remove_common_params(params)
 
         logUrl = self.__configs[P_SERVER_URL] + '?' + signContentStr
         THREAD_LOCAL.logger.info('[' + THREAD_LOCAL.uuid + ']request:' + logUrl)
+        return (queryString, params)
 
-        response = post(self.__configs[P_SERVER_URL], queryString, headers, params, self.__configs[P_CHARSET],
-                        self.__configs[P_TIMEOUT])
+    def after(self, response):
         if PYTHON_VERSION_3:
              response = response.decode(self.__configs[P_CHARSET])
         THREAD_LOCAL.logger.info('[' + THREAD_LOCAL.uuid + ']response:' + response)
-        return self.parseResponse(response)
+        return self.parse_response(response)
 
+    def execute(self, method, params):
+        THREAD_LOCAL.uuid = str(uuid.uuid1())
+        headers = {
+            'Content-type': 'application/x-www-form-urlencoded;charset=' + self.__configs[P_CHARSET],
+            "Cache-Control": "no-cache",
+            "Connection": "Keep-Alive",
+            "User-Agent": ALIPAY_SDK_PYTHON_VERSION,
+            "log-uuid": THREAD_LOCAL.uuid,
+        }
 
+        queryString, params = self.prepare(method, params)
 
+        response = post(self.__configs[P_SERVER_URL], queryString, headers, params, self.__configs[P_CHARSET],
+                        self.__configs[P_TIMEOUT])
+
+        return self.after(response)
+
+    def multipart_execute(self, method, params, multipartParams):
+        THREAD_LOCAL.uuid = str(uuid.uuid1())
+        headers = {
+            "Cache-Control": "no-cache",
+            "Connection": "Keep-Alive",
+            "User-Agent": ALIPAY_SDK_PYTHON_VERSION,
+            "log-uuid": THREAD_LOCAL.uuid,
+        }
+
+        queryString, params = self.prepare(method, params)
+
+        response = multipartPost(self.__configs[P_SERVER_URL], queryString, headers, params, multipartParams,
+                                 self.__configs[P_CHARSET], self.__configs[P_TIMEOUT])
+
+        return self.after(response)
+
+    def page_execute(self, method, params, http_method="POST"):
+        THREAD_LOCAL.uuid = str(uuid.uuid1())
+        url = self.__configs[P_SERVER_URL]
+        pos = url.find("?")
+        if pos >= 0:
+            url = url[0:pos]
+
+        queryString, params = self.prepare(method, params)
+
+        if http_method == "GET":
+            return url + "?" + queryString + "&" + urlencode(params, self.__configs[P_CHARSET])
+        else:
+            return self.build_form(url + "?" + queryString, params)

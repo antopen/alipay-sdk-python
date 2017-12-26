@@ -9,6 +9,7 @@ import json
 from alipay.aop.api.AlipayResponse import AlipayResponse
 from alipay.aop.api.DefaultAlipayClient import DefaultAlipayClient
 from alipay.aop.api.constant.ParamConstants import *
+from alipay.aop.api.util.WebUtils import FileItem
 import logging
 
 
@@ -28,7 +29,7 @@ configs = {
     P_CHARSET: "gbk"
 }
 
-def simpleRequest():
+def simple_request():
     bizParams = {
         "key_a": "支付宝"
     }
@@ -39,18 +40,60 @@ def simpleRequest():
         response = client.execute("alipay.open.app.fangzhong.test", {"biz_content": bizParams})
     except Exception as e:
         print(e)
+    if not response:
+        return
 
-    if response:
-        print("response:" + response)
-        alipayResponse = AlipayResponse(response)
-        if alipayResponse.getCode() == '10000':
-            responseObject = json.loads(alipayResponse.getResponseStr())
-            # 获取responseObject的各个属性
-            # ...
-        else:
-            print(alipayResponse.getCode() + '|' + alipayResponse.getMsg() + '|' + alipayResponse.getSubCode() + \
-                  '|' + alipayResponse.getSubMsg())
+    alipayResponse = AlipayResponse(response)
+    if alipayResponse.getCode() == '10000':
+        responseObject = json.loads(alipayResponse.getResponseStr())
+        # 获取responseObject的各个属性
+        # ...
+    else:
+        print(alipayResponse.getCode() + '|' + alipayResponse.getMsg() + '|' + alipayResponse.getSubCode() + \
+              '|' + alipayResponse.getSubMsg())
+
+
+def multipart_request():
+    multipartParams = {
+        'file_content': FileItem('IMG_2916.jpg', open("/Users/liuqun.lq/Downloads/IMG.jpg", 'rb').read()),
+        'file_content2': FileItem('soapui-settings.txt', open("/Users/liuqun.lq/Downloads/soapui-settings.txt", 'rb').read()),
+    }
+
+    params = {
+        "other_param": "支付宝"
+    }
+
+    client = DefaultAlipayClient(configs, logger)
+    response = None
+
+    response = client.multipart_execute("alipay.open.app.fangzhong.upload", params, multipartParams)
+
+    alipayResponse = AlipayResponse(response)
+    if alipayResponse.getCode() == '10000':
+        responseObject = json.loads(alipayResponse.getResponseStr())
+        # 获取responseObject的各个属性
+        # ...
+    else:
+        print(alipayResponse.getCode() + '|' + alipayResponse.getMsg() + '|' + alipayResponse.getSubCode() + \
+              '|' + alipayResponse.getSubMsg())
+
+
+def page_request():
+    bizParams = {
+        "key_a": "支付宝"
+    }
+
+    client = DefaultAlipayClient(configs, logger)
+
+    response = client.page_execute("alipay.open.app.fangzhong.test", {"biz_content": bizParams}, "POST")
+    print(response)
+
+    response = client.page_execute("alipay.open.app.fangzhong.test", {"biz_content": bizParams}, "GET")
+    print(response)
+
 
 
 if __name__ == '__main__':
-    simpleRequest()
+    #simple_request()
+    multipart_request()
+    #page_request()
