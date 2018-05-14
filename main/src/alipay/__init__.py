@@ -1,1 +1,0 @@
-__version__ = "alipay-sdk-python-1.0.0.20171220"
