@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/python
 '''
  Licensed to the Apache Software Foundation (ASF) under one
@@ -20,6 +21,7 @@ from setuptools import setup, find_packages
 import os
 import platform
 import logging
+import codecs
 
 """
 setup module for core.
@@ -36,13 +38,13 @@ URL = "https://github.com/antopen/alipay-sdk-python"
 TOPDIR = os.path.dirname(__file__) or "."
 VERSION = __import__(PACKAGE).__version__
 
-desc_file = open("README.md")
+desc_file = codecs.open("README.rst", 'r', 'utf-8')
 try:
     LONG_DESCRIPTION = desc_file.read()
 finally:
     desc_file.close()
 
-requires = ["rsa"]
+requires = ["pycrypto","rsa"]
 
 setup(
     name=NAME,
