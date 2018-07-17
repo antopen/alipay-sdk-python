@@ -16,6 +16,7 @@ class SettleCardInfo(object):
         self._account_inst_province = None
         self._account_no = None
         self._account_type = None
+        self._bank_code = None
         self._usage_type = None
 
     @property
@@ -75,6 +76,13 @@ class SettleCardInfo(object):
     def account_type(self, value):
         self._account_type = value
     @property
+    def bank_code(self):
+        return self._bank_code
+
+    @bank_code.setter
+    def bank_code(self, value):
+        self._bank_code = value
+    @property
     def usage_type(self):
         return self._usage_type
 
@@ -125,6 +133,11 @@ class SettleCardInfo(object):
                 params['account_type'] = self.account_type.to_alipay_dict()
             else:
                 params['account_type'] = self.account_type
+        if self.bank_code:
+            if hasattr(self.bank_code, 'to_alipay_dict'):
+                params['bank_code'] = self.bank_code.to_alipay_dict()
+            else:
+                params['bank_code'] = self.bank_code
         if self.usage_type:
             if hasattr(self.usage_type, 'to_alipay_dict'):
                 params['usage_type'] = self.usage_type.to_alipay_dict()
@@ -153,6 +166,8 @@ class SettleCardInfo(object):
             o.account_no = d['account_no']
         if 'account_type' in d:
             o.account_type = d['account_type']
+        if 'bank_code' in d:
+            o.bank_code = d['bank_code']
         if 'usage_type' in d:
             o.usage_type = d['usage_type']
         return o

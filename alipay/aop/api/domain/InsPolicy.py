@@ -25,6 +25,8 @@ class InsPolicy(object):
         self._insureds = None
         self._merchant_name = None
         self._out_policy_no = None
+        self._pay_end_time = None
+        self._pay_to_time = None
         self._policy_no = None
         self._policy_status = None
         self._premium = None
@@ -140,6 +142,20 @@ class InsPolicy(object):
     @out_policy_no.setter
     def out_policy_no(self, value):
         self._out_policy_no = value
+    @property
+    def pay_end_time(self):
+        return self._pay_end_time
+
+    @pay_end_time.setter
+    def pay_end_time(self, value):
+        self._pay_end_time = value
+    @property
+    def pay_to_time(self):
+        return self._pay_to_time
+
+    @pay_to_time.setter
+    def pay_to_time(self, value):
+        self._pay_to_time = value
     @property
     def policy_no(self):
         return self._policy_no
@@ -268,6 +284,16 @@ class InsPolicy(object):
                 params['out_policy_no'] = self.out_policy_no.to_alipay_dict()
             else:
                 params['out_policy_no'] = self.out_policy_no
+        if self.pay_end_time:
+            if hasattr(self.pay_end_time, 'to_alipay_dict'):
+                params['pay_end_time'] = self.pay_end_time.to_alipay_dict()
+            else:
+                params['pay_end_time'] = self.pay_end_time
+        if self.pay_to_time:
+            if hasattr(self.pay_to_time, 'to_alipay_dict'):
+                params['pay_to_time'] = self.pay_to_time.to_alipay_dict()
+            else:
+                params['pay_to_time'] = self.pay_to_time
         if self.policy_no:
             if hasattr(self.policy_no, 'to_alipay_dict'):
                 params['policy_no'] = self.policy_no.to_alipay_dict()
@@ -332,6 +358,10 @@ class InsPolicy(object):
             o.merchant_name = d['merchant_name']
         if 'out_policy_no' in d:
             o.out_policy_no = d['out_policy_no']
+        if 'pay_end_time' in d:
+            o.pay_end_time = d['pay_end_time']
+        if 'pay_to_time' in d:
+            o.pay_to_time = d['pay_to_time']
         if 'policy_no' in d:
             o.policy_no = d['policy_no']
         if 'policy_status' in d:

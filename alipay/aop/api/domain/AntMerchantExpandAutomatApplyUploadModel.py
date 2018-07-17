@@ -3,13 +3,16 @@
 import json
 
 from alipay.aop.api.constant.ParamConstants import *
+from alipay.aop.api.domain.SmartAutomatAssociate import SmartAutomatAssociate
 from alipay.aop.api.domain.SmartAddressInfo import SmartAddressInfo
 from alipay.aop.api.domain.SmartAddressInfo import SmartAddressInfo
+from alipay.aop.api.domain.SmartAutomatScene import SmartAutomatScene
 
 
 class AntMerchantExpandAutomatApplyUploadModel(object):
 
     def __init__(self):
+        self._associate = None
         self._delivery_address = None
         self._machine_cooperation_type = None
         self._machine_delivery_date = None
@@ -19,9 +22,20 @@ class AntMerchantExpandAutomatApplyUploadModel(object):
         self._merchant_user_type = None
         self._point_position = None
         self._product_user_id = None
+        self._scene = None
         self._terminal_id = None
         self._trade_no = None
 
+    @property
+    def associate(self):
+        return self._associate
+
+    @associate.setter
+    def associate(self, value):
+        if isinstance(value, SmartAutomatAssociate):
+            self._associate = value
+        else:
+            self._associate = SmartAutomatAssociate.from_alipay_dict(value)
     @property
     def delivery_address(self):
         return self._delivery_address
@@ -92,6 +106,16 @@ class AntMerchantExpandAutomatApplyUploadModel(object):
     def product_user_id(self, value):
         self._product_user_id = value
     @property
+    def scene(self):
+        return self._scene
+
+    @scene.setter
+    def scene(self, value):
+        if isinstance(value, SmartAutomatScene):
+            self._scene = value
+        else:
+            self._scene = SmartAutomatScene.from_alipay_dict(value)
+    @property
     def terminal_id(self):
         return self._terminal_id
 
@@ -109,6 +133,11 @@ class AntMerchantExpandAutomatApplyUploadModel(object):
 
     def to_alipay_dict(self):
         params = dict()
+        if self.associate:
+            if hasattr(self.associate, 'to_alipay_dict'):
+                params['associate'] = self.associate.to_alipay_dict()
+            else:
+                params['associate'] = self.associate
         if self.delivery_address:
             if hasattr(self.delivery_address, 'to_alipay_dict'):
                 params['delivery_address'] = self.delivery_address.to_alipay_dict()
@@ -154,6 +183,11 @@ class AntMerchantExpandAutomatApplyUploadModel(object):
                 params['product_user_id'] = self.product_user_id.to_alipay_dict()
             else:
                 params['product_user_id'] = self.product_user_id
+        if self.scene:
+            if hasattr(self.scene, 'to_alipay_dict'):
+                params['scene'] = self.scene.to_alipay_dict()
+            else:
+                params['scene'] = self.scene
         if self.terminal_id:
             if hasattr(self.terminal_id, 'to_alipay_dict'):
                 params['terminal_id'] = self.terminal_id.to_alipay_dict()
@@ -171,6 +205,8 @@ class AntMerchantExpandAutomatApplyUploadModel(object):
         if not d:
             return None
         o = AntMerchantExpandAutomatApplyUploadModel()
+        if 'associate' in d:
+            o.associate = d['associate']
         if 'delivery_address' in d:
             o.delivery_address = d['delivery_address']
         if 'machine_cooperation_type' in d:
@@ -189,6 +225,8 @@ class AntMerchantExpandAutomatApplyUploadModel(object):
             o.point_position = d['point_position']
         if 'product_user_id' in d:
             o.product_user_id = d['product_user_id']
+        if 'scene' in d:
+            o.scene = d['scene']
         if 'terminal_id' in d:
             o.terminal_id = d['terminal_id']
         if 'trade_no' in d:

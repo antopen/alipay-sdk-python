@@ -20,6 +20,7 @@ class AntMerchantExpandIndirectZftCreateModel(object):
         self._business_address = None
         self._cert_image = None
         self._cert_image_back = None
+        self._cert_name = None
         self._cert_no = None
         self._cert_type = None
         self._contact_infos = None
@@ -92,6 +93,13 @@ class AntMerchantExpandIndirectZftCreateModel(object):
     @cert_image_back.setter
     def cert_image_back(self, value):
         self._cert_image_back = value
+    @property
+    def cert_name(self):
+        return self._cert_name
+
+    @cert_name.setter
+    def cert_name(self, value):
+        self._cert_name = value
     @property
     def cert_no(self):
         return self._cert_no
@@ -298,6 +306,11 @@ class AntMerchantExpandIndirectZftCreateModel(object):
                 params['cert_image_back'] = self.cert_image_back.to_alipay_dict()
             else:
                 params['cert_image_back'] = self.cert_image_back
+        if self.cert_name:
+            if hasattr(self.cert_name, 'to_alipay_dict'):
+                params['cert_name'] = self.cert_name.to_alipay_dict()
+            else:
+                params['cert_name'] = self.cert_name
         if self.cert_no:
             if hasattr(self.cert_no, 'to_alipay_dict'):
                 params['cert_no'] = self.cert_no.to_alipay_dict()
@@ -442,6 +455,8 @@ class AntMerchantExpandIndirectZftCreateModel(object):
             o.cert_image = d['cert_image']
         if 'cert_image_back' in d:
             o.cert_image_back = d['cert_image_back']
+        if 'cert_name' in d:
+            o.cert_name = d['cert_name']
         if 'cert_no' in d:
             o.cert_no = d['cert_no']
         if 'cert_type' in d:

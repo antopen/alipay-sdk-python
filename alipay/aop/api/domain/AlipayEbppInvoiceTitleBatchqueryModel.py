@@ -9,6 +9,7 @@ class AlipayEbppInvoiceTitleBatchqueryModel(object):
 
     def __init__(self):
         self._end_invoice_date = None
+        self._expense_status_list = None
         self._invoice_kind_list = None
         self._limit_size = None
         self._page_num = None
@@ -22,6 +23,16 @@ class AlipayEbppInvoiceTitleBatchqueryModel(object):
     @end_invoice_date.setter
     def end_invoice_date(self, value):
         self._end_invoice_date = value
+    @property
+    def expense_status_list(self):
+        return self._expense_status_list
+
+    @expense_status_list.setter
+    def expense_status_list(self, value):
+        if isinstance(value, list):
+            self._expense_status_list = list()
+            for i in value:
+                self._expense_status_list.append(i)
     @property
     def invoice_kind_list(self):
         return self._invoice_kind_list
@@ -69,6 +80,16 @@ class AlipayEbppInvoiceTitleBatchqueryModel(object):
                 params['end_invoice_date'] = self.end_invoice_date.to_alipay_dict()
             else:
                 params['end_invoice_date'] = self.end_invoice_date
+        if self.expense_status_list:
+            if isinstance(self.expense_status_list, list):
+                for i in range(0, len(self.expense_status_list)):
+                    element = self.expense_status_list[i]
+                    if hasattr(element, 'to_alipay_dict'):
+                        self.expense_status_list[i] = element.to_alipay_dict()
+            if hasattr(self.expense_status_list, 'to_alipay_dict'):
+                params['expense_status_list'] = self.expense_status_list.to_alipay_dict()
+            else:
+                params['expense_status_list'] = self.expense_status_list
         if self.invoice_kind_list:
             if isinstance(self.invoice_kind_list, list):
                 for i in range(0, len(self.invoice_kind_list)):
@@ -108,6 +129,8 @@ class AlipayEbppInvoiceTitleBatchqueryModel(object):
         o = AlipayEbppInvoiceTitleBatchqueryModel()
         if 'end_invoice_date' in d:
             o.end_invoice_date = d['end_invoice_date']
+        if 'expense_status_list' in d:
+            o.expense_status_list = d['expense_status_list']
         if 'invoice_kind_list' in d:
             o.invoice_kind_list = d['invoice_kind_list']
         if 'limit_size' in d:

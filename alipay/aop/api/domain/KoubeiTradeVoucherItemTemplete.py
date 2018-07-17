@@ -3,14 +3,18 @@
 import json
 
 from alipay.aop.api.constant.ParamConstants import *
+from alipay.aop.api.domain.AvailableTimeInfo import AvailableTimeInfo
 from alipay.aop.api.domain.KoubeiItemDescription import KoubeiItemDescription
+from alipay.aop.api.domain.UnAvailableTimeInfo import UnAvailableTimeInfo
 
 
 class KoubeiTradeVoucherItemTemplete(object):
 
     def __init__(self):
+        self._available_time_info_list = None
         self._buyer_notes = None
         self._support_book = None
+        self._un_available_time_info_list = None
         self._validity_period = None
         self._validity_period_range_from = None
         self._validity_period_range_to = None
@@ -18,6 +22,19 @@ class KoubeiTradeVoucherItemTemplete(object):
         self._verify_enable_times = None
         self._verify_frequency = None
 
+    @property
+    def available_time_info_list(self):
+        return self._available_time_info_list
+
+    @available_time_info_list.setter
+    def available_time_info_list(self, value):
+        if isinstance(value, list):
+            self._available_time_info_list = list()
+            for i in value:
+                if isinstance(i, AvailableTimeInfo):
+                    self._available_time_info_list.append(i)
+                else:
+                    self._available_time_info_list.append(AvailableTimeInfo.from_alipay_dict(i))
     @property
     def buyer_notes(self):
         return self._buyer_notes
@@ -38,6 +55,19 @@ class KoubeiTradeVoucherItemTemplete(object):
     @support_book.setter
     def support_book(self, value):
         self._support_book = value
+    @property
+    def un_available_time_info_list(self):
+        return self._un_available_time_info_list
+
+    @un_available_time_info_list.setter
+    def un_available_time_info_list(self, value):
+        if isinstance(value, list):
+            self._un_available_time_info_list = list()
+            for i in value:
+                if isinstance(i, UnAvailableTimeInfo):
+                    self._un_available_time_info_list.append(i)
+                else:
+                    self._un_available_time_info_list.append(UnAvailableTimeInfo.from_alipay_dict(i))
     @property
     def validity_period(self):
         return self._validity_period
@@ -84,6 +114,16 @@ class KoubeiTradeVoucherItemTemplete(object):
 
     def to_alipay_dict(self):
         params = dict()
+        if self.available_time_info_list:
+            if isinstance(self.available_time_info_list, list):
+                for i in range(0, len(self.available_time_info_list)):
+                    element = self.available_time_info_list[i]
+                    if hasattr(element, 'to_alipay_dict'):
+                        self.available_time_info_list[i] = element.to_alipay_dict()
+            if hasattr(self.available_time_info_list, 'to_alipay_dict'):
+                params['available_time_info_list'] = self.available_time_info_list.to_alipay_dict()
+            else:
+                params['available_time_info_list'] = self.available_time_info_list
         if self.buyer_notes:
             if isinstance(self.buyer_notes, list):
                 for i in range(0, len(self.buyer_notes)):
@@ -99,6 +139,16 @@ class KoubeiTradeVoucherItemTemplete(object):
                 params['support_book'] = self.support_book.to_alipay_dict()
             else:
                 params['support_book'] = self.support_book
+        if self.un_available_time_info_list:
+            if isinstance(self.un_available_time_info_list, list):
+                for i in range(0, len(self.un_available_time_info_list)):
+                    element = self.un_available_time_info_list[i]
+                    if hasattr(element, 'to_alipay_dict'):
+                        self.un_available_time_info_list[i] = element.to_alipay_dict()
+            if hasattr(self.un_available_time_info_list, 'to_alipay_dict'):
+                params['un_available_time_info_list'] = self.un_available_time_info_list.to_alipay_dict()
+            else:
+                params['un_available_time_info_list'] = self.un_available_time_info_list
         if self.validity_period:
             if hasattr(self.validity_period, 'to_alipay_dict'):
                 params['validity_period'] = self.validity_period.to_alipay_dict()
@@ -136,10 +186,14 @@ class KoubeiTradeVoucherItemTemplete(object):
         if not d:
             return None
         o = KoubeiTradeVoucherItemTemplete()
+        if 'available_time_info_list' in d:
+            o.available_time_info_list = d['available_time_info_list']
         if 'buyer_notes' in d:
             o.buyer_notes = d['buyer_notes']
         if 'support_book' in d:
             o.support_book = d['support_book']
+        if 'un_available_time_info_list' in d:
+            o.un_available_time_info_list = d['un_available_time_info_list']
         if 'validity_period' in d:
             o.validity_period = d['validity_period']
         if 'validity_period_range_from' in d:

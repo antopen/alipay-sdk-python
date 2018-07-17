@@ -14,6 +14,8 @@ class AssetDeliveryAddress(object):
         self._contact_phone = None
         self._district = None
         self._province = None
+        self._warehouse_id = None
+        self._warehouse_name = None
         self._zip_code = None
 
     @property
@@ -59,6 +61,20 @@ class AssetDeliveryAddress(object):
     def province(self, value):
         self._province = value
     @property
+    def warehouse_id(self):
+        return self._warehouse_id
+
+    @warehouse_id.setter
+    def warehouse_id(self, value):
+        self._warehouse_id = value
+    @property
+    def warehouse_name(self):
+        return self._warehouse_name
+
+    @warehouse_name.setter
+    def warehouse_name(self, value):
+        self._warehouse_name = value
+    @property
     def zip_code(self):
         return self._zip_code
 
@@ -99,6 +115,16 @@ class AssetDeliveryAddress(object):
                 params['province'] = self.province.to_alipay_dict()
             else:
                 params['province'] = self.province
+        if self.warehouse_id:
+            if hasattr(self.warehouse_id, 'to_alipay_dict'):
+                params['warehouse_id'] = self.warehouse_id.to_alipay_dict()
+            else:
+                params['warehouse_id'] = self.warehouse_id
+        if self.warehouse_name:
+            if hasattr(self.warehouse_name, 'to_alipay_dict'):
+                params['warehouse_name'] = self.warehouse_name.to_alipay_dict()
+            else:
+                params['warehouse_name'] = self.warehouse_name
         if self.zip_code:
             if hasattr(self.zip_code, 'to_alipay_dict'):
                 params['zip_code'] = self.zip_code.to_alipay_dict()
@@ -123,6 +149,10 @@ class AssetDeliveryAddress(object):
             o.district = d['district']
         if 'province' in d:
             o.province = d['province']
+        if 'warehouse_id' in d:
+            o.warehouse_id = d['warehouse_id']
+        if 'warehouse_name' in d:
+            o.warehouse_name = d['warehouse_name']
         if 'zip_code' in d:
             o.zip_code = d['zip_code']
         return o

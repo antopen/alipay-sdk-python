@@ -10,6 +10,7 @@ from alipay.aop.api.domain.InvoiceTitleOpenModel import InvoiceTitleOpenModel
 class InvoiceSendOpenModel(object):
 
     def __init__(self):
+        self._apply_id = None
         self._check_code = None
         self._checker = None
         self._clerk = None
@@ -38,6 +39,13 @@ class InvoiceSendOpenModel(object):
         self._tax_amount = None
         self._user_id = None
 
+    @property
+    def apply_id(self):
+        return self._apply_id
+
+    @apply_id.setter
+    def apply_id(self, value):
+        self._apply_id = value
     @property
     def check_code(self):
         return self._check_code
@@ -240,6 +248,11 @@ class InvoiceSendOpenModel(object):
 
     def to_alipay_dict(self):
         params = dict()
+        if self.apply_id:
+            if hasattr(self.apply_id, 'to_alipay_dict'):
+                params['apply_id'] = self.apply_id.to_alipay_dict()
+            else:
+                params['apply_id'] = self.apply_id
         if self.check_code:
             if hasattr(self.check_code, 'to_alipay_dict'):
                 params['check_code'] = self.check_code.to_alipay_dict()
@@ -387,6 +400,8 @@ class InvoiceSendOpenModel(object):
         if not d:
             return None
         o = InvoiceSendOpenModel()
+        if 'apply_id' in d:
+            o.apply_id = d['apply_id']
         if 'check_code' in d:
             o.check_code = d['check_code']
         if 'checker' in d:

@@ -14,6 +14,8 @@ class KbdishInfo(object):
         self._catetory_small_id = None
         self._create_user = None
         self._cur_price_flag = None
+        self._default_in_carts = None
+        self._default_in_carts_detail = None
         self._dish_cuisine = None
         self._dish_id = None
         self._dish_img = None
@@ -26,9 +28,14 @@ class KbdishInfo(object):
         self._goods_id = None
         self._merchant_id = None
         self._min_serving = None
+        self._mini_add_num = None
         self._nb_remember_code = None
+        self._not_count_threshold = None
+        self._out_dish_id = None
         self._remarks = None
+        self._shop_id = None
         self._status = None
+        self._tags = None
         self._type_big = None
         self._type_small = None
         self._unit_id = None
@@ -62,6 +69,20 @@ class KbdishInfo(object):
     @cur_price_flag.setter
     def cur_price_flag(self, value):
         self._cur_price_flag = value
+    @property
+    def default_in_carts(self):
+        return self._default_in_carts
+
+    @default_in_carts.setter
+    def default_in_carts(self, value):
+        self._default_in_carts = value
+    @property
+    def default_in_carts_detail(self):
+        return self._default_in_carts_detail
+
+    @default_in_carts_detail.setter
+    def default_in_carts_detail(self, value):
+        self._default_in_carts_detail = value
     @property
     def dish_cuisine(self):
         return self._dish_cuisine
@@ -159,12 +180,33 @@ class KbdishInfo(object):
     def min_serving(self, value):
         self._min_serving = value
     @property
+    def mini_add_num(self):
+        return self._mini_add_num
+
+    @mini_add_num.setter
+    def mini_add_num(self, value):
+        self._mini_add_num = value
+    @property
     def nb_remember_code(self):
         return self._nb_remember_code
 
     @nb_remember_code.setter
     def nb_remember_code(self, value):
         self._nb_remember_code = value
+    @property
+    def not_count_threshold(self):
+        return self._not_count_threshold
+
+    @not_count_threshold.setter
+    def not_count_threshold(self, value):
+        self._not_count_threshold = value
+    @property
+    def out_dish_id(self):
+        return self._out_dish_id
+
+    @out_dish_id.setter
+    def out_dish_id(self, value):
+        self._out_dish_id = value
     @property
     def remarks(self):
         return self._remarks
@@ -173,12 +215,26 @@ class KbdishInfo(object):
     def remarks(self, value):
         self._remarks = value
     @property
+    def shop_id(self):
+        return self._shop_id
+
+    @shop_id.setter
+    def shop_id(self, value):
+        self._shop_id = value
+    @property
     def status(self):
         return self._status
 
     @status.setter
     def status(self, value):
         self._status = value
+    @property
+    def tags(self):
+        return self._tags
+
+    @tags.setter
+    def tags(self, value):
+        self._tags = value
     @property
     def type_big(self):
         return self._type_big
@@ -231,6 +287,16 @@ class KbdishInfo(object):
                 params['cur_price_flag'] = self.cur_price_flag.to_alipay_dict()
             else:
                 params['cur_price_flag'] = self.cur_price_flag
+        if self.default_in_carts:
+            if hasattr(self.default_in_carts, 'to_alipay_dict'):
+                params['default_in_carts'] = self.default_in_carts.to_alipay_dict()
+            else:
+                params['default_in_carts'] = self.default_in_carts
+        if self.default_in_carts_detail:
+            if hasattr(self.default_in_carts_detail, 'to_alipay_dict'):
+                params['default_in_carts_detail'] = self.default_in_carts_detail.to_alipay_dict()
+            else:
+                params['default_in_carts_detail'] = self.default_in_carts_detail
         if self.dish_cuisine:
             if hasattr(self.dish_cuisine, 'to_alipay_dict'):
                 params['dish_cuisine'] = self.dish_cuisine.to_alipay_dict()
@@ -301,21 +367,46 @@ class KbdishInfo(object):
                 params['min_serving'] = self.min_serving.to_alipay_dict()
             else:
                 params['min_serving'] = self.min_serving
+        if self.mini_add_num:
+            if hasattr(self.mini_add_num, 'to_alipay_dict'):
+                params['mini_add_num'] = self.mini_add_num.to_alipay_dict()
+            else:
+                params['mini_add_num'] = self.mini_add_num
         if self.nb_remember_code:
             if hasattr(self.nb_remember_code, 'to_alipay_dict'):
                 params['nb_remember_code'] = self.nb_remember_code.to_alipay_dict()
             else:
                 params['nb_remember_code'] = self.nb_remember_code
+        if self.not_count_threshold:
+            if hasattr(self.not_count_threshold, 'to_alipay_dict'):
+                params['not_count_threshold'] = self.not_count_threshold.to_alipay_dict()
+            else:
+                params['not_count_threshold'] = self.not_count_threshold
+        if self.out_dish_id:
+            if hasattr(self.out_dish_id, 'to_alipay_dict'):
+                params['out_dish_id'] = self.out_dish_id.to_alipay_dict()
+            else:
+                params['out_dish_id'] = self.out_dish_id
         if self.remarks:
             if hasattr(self.remarks, 'to_alipay_dict'):
                 params['remarks'] = self.remarks.to_alipay_dict()
             else:
                 params['remarks'] = self.remarks
+        if self.shop_id:
+            if hasattr(self.shop_id, 'to_alipay_dict'):
+                params['shop_id'] = self.shop_id.to_alipay_dict()
+            else:
+                params['shop_id'] = self.shop_id
         if self.status:
             if hasattr(self.status, 'to_alipay_dict'):
                 params['status'] = self.status.to_alipay_dict()
             else:
                 params['status'] = self.status
+        if self.tags:
+            if hasattr(self.tags, 'to_alipay_dict'):
+                params['tags'] = self.tags.to_alipay_dict()
+            else:
+                params['tags'] = self.tags
         if self.type_big:
             if hasattr(self.type_big, 'to_alipay_dict'):
                 params['type_big'] = self.type_big.to_alipay_dict()
@@ -351,6 +442,10 @@ class KbdishInfo(object):
             o.create_user = d['create_user']
         if 'cur_price_flag' in d:
             o.cur_price_flag = d['cur_price_flag']
+        if 'default_in_carts' in d:
+            o.default_in_carts = d['default_in_carts']
+        if 'default_in_carts_detail' in d:
+            o.default_in_carts_detail = d['default_in_carts_detail']
         if 'dish_cuisine' in d:
             o.dish_cuisine = d['dish_cuisine']
         if 'dish_id' in d:
@@ -375,12 +470,22 @@ class KbdishInfo(object):
             o.merchant_id = d['merchant_id']
         if 'min_serving' in d:
             o.min_serving = d['min_serving']
+        if 'mini_add_num' in d:
+            o.mini_add_num = d['mini_add_num']
         if 'nb_remember_code' in d:
             o.nb_remember_code = d['nb_remember_code']
+        if 'not_count_threshold' in d:
+            o.not_count_threshold = d['not_count_threshold']
+        if 'out_dish_id' in d:
+            o.out_dish_id = d['out_dish_id']
         if 'remarks' in d:
             o.remarks = d['remarks']
+        if 'shop_id' in d:
+            o.shop_id = d['shop_id']
         if 'status' in d:
             o.status = d['status']
+        if 'tags' in d:
+            o.tags = d['tags']
         if 'type_big' in d:
             o.type_big = d['type_big']
         if 'type_small' in d:

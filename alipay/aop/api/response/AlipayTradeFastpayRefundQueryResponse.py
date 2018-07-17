@@ -3,6 +3,7 @@
 import json
 
 from alipay.aop.api.response.AlipayResponse import AlipayResponse
+from alipay.aop.api.domain.RefundRoyaltyResult import RefundRoyaltyResult
 
 
 class AlipayTradeFastpayRefundQueryResponse(AlipayResponse):
@@ -18,6 +19,7 @@ class AlipayTradeFastpayRefundQueryResponse(AlipayResponse):
         self._present_refund_mdiscount_amount = None
         self._refund_amount = None
         self._refund_reason = None
+        self._refund_royaltys = None
         self._refund_status = None
         self._total_amount = None
         self._trade_no = None
@@ -86,6 +88,19 @@ class AlipayTradeFastpayRefundQueryResponse(AlipayResponse):
     def refund_reason(self, value):
         self._refund_reason = value
     @property
+    def refund_royaltys(self):
+        return self._refund_royaltys
+
+    @refund_royaltys.setter
+    def refund_royaltys(self, value):
+        if isinstance(value, list):
+            self._refund_royaltys = list()
+            for i in value:
+                if isinstance(i, RefundRoyaltyResult):
+                    self._refund_royaltys.append(i)
+                else:
+                    self._refund_royaltys.append(RefundRoyaltyResult.from_alipay_dict(i))
+    @property
     def refund_status(self):
         return self._refund_status
 
@@ -127,6 +142,8 @@ class AlipayTradeFastpayRefundQueryResponse(AlipayResponse):
             self.refund_amount = response['refund_amount']
         if 'refund_reason' in response:
             self.refund_reason = response['refund_reason']
+        if 'refund_royaltys' in response:
+            self.refund_royaltys = response['refund_royaltys']
         if 'refund_status' in response:
             self.refund_status = response['refund_status']
         if 'total_amount' in response:

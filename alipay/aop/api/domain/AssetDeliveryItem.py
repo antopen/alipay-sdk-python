@@ -23,7 +23,10 @@ class AssetDeliveryItem(object):
         self._item_name = None
         self._logistics_info = None
         self._memo = None
+        self._parent_item_id = None
         self._print_data = None
+        self._produce_order_item_id = None
+        self._record_type = None
         self._supplier_id = None
         self._supplier_name = None
         self._to_address = None
@@ -119,12 +122,33 @@ class AssetDeliveryItem(object):
     def memo(self, value):
         self._memo = value
     @property
+    def parent_item_id(self):
+        return self._parent_item_id
+
+    @parent_item_id.setter
+    def parent_item_id(self, value):
+        self._parent_item_id = value
+    @property
     def print_data(self):
         return self._print_data
 
     @print_data.setter
     def print_data(self, value):
         self._print_data = value
+    @property
+    def produce_order_item_id(self):
+        return self._produce_order_item_id
+
+    @produce_order_item_id.setter
+    def produce_order_item_id(self, value):
+        self._produce_order_item_id = value
+    @property
+    def record_type(self):
+        return self._record_type
+
+    @record_type.setter
+    def record_type(self, value):
+        self._record_type = value
     @property
     def supplier_id(self):
         return self._supplier_id
@@ -213,11 +237,26 @@ class AssetDeliveryItem(object):
                 params['memo'] = self.memo.to_alipay_dict()
             else:
                 params['memo'] = self.memo
+        if self.parent_item_id:
+            if hasattr(self.parent_item_id, 'to_alipay_dict'):
+                params['parent_item_id'] = self.parent_item_id.to_alipay_dict()
+            else:
+                params['parent_item_id'] = self.parent_item_id
         if self.print_data:
             if hasattr(self.print_data, 'to_alipay_dict'):
                 params['print_data'] = self.print_data.to_alipay_dict()
             else:
                 params['print_data'] = self.print_data
+        if self.produce_order_item_id:
+            if hasattr(self.produce_order_item_id, 'to_alipay_dict'):
+                params['produce_order_item_id'] = self.produce_order_item_id.to_alipay_dict()
+            else:
+                params['produce_order_item_id'] = self.produce_order_item_id
+        if self.record_type:
+            if hasattr(self.record_type, 'to_alipay_dict'):
+                params['record_type'] = self.record_type.to_alipay_dict()
+            else:
+                params['record_type'] = self.record_type
         if self.supplier_id:
             if hasattr(self.supplier_id, 'to_alipay_dict'):
                 params['supplier_id'] = self.supplier_id.to_alipay_dict()
@@ -264,8 +303,14 @@ class AssetDeliveryItem(object):
             o.logistics_info = d['logistics_info']
         if 'memo' in d:
             o.memo = d['memo']
+        if 'parent_item_id' in d:
+            o.parent_item_id = d['parent_item_id']
         if 'print_data' in d:
             o.print_data = d['print_data']
+        if 'produce_order_item_id' in d:
+            o.produce_order_item_id = d['produce_order_item_id']
+        if 'record_type' in d:
+            o.record_type = d['record_type']
         if 'supplier_id' in d:
             o.supplier_id = d['supplier_id']
         if 'supplier_name' in d:

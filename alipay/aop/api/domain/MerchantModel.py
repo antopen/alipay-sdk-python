@@ -12,6 +12,7 @@ class MerchantModel(object):
         self._contact_name = None
         self._contact_number = None
         self._name = None
+        self._pid = None
 
     @property
     def alias_name(self):
@@ -41,6 +42,13 @@ class MerchantModel(object):
     @name.setter
     def name(self, value):
         self._name = value
+    @property
+    def pid(self):
+        return self._pid
+
+    @pid.setter
+    def pid(self, value):
+        self._pid = value
 
 
     def to_alipay_dict(self):
@@ -65,6 +73,11 @@ class MerchantModel(object):
                 params['name'] = self.name.to_alipay_dict()
             else:
                 params['name'] = self.name
+        if self.pid:
+            if hasattr(self.pid, 'to_alipay_dict'):
+                params['pid'] = self.pid.to_alipay_dict()
+            else:
+                params['pid'] = self.pid
         return params
 
     @staticmethod
@@ -80,6 +93,8 @@ class MerchantModel(object):
             o.contact_number = d['contact_number']
         if 'name' in d:
             o.name = d['name']
+        if 'pid' in d:
+            o.pid = d['pid']
         return o
 
 

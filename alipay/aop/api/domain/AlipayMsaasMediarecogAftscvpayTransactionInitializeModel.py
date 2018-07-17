@@ -10,6 +10,7 @@ class AlipayMsaasMediarecogAftscvpayTransactionInitializeModel(object):
 
     def __init__(self):
         self._goods_infos = None
+        self._scene = None
         self._terminal_id = None
         self._transaction_id = None
 
@@ -26,6 +27,13 @@ class AlipayMsaasMediarecogAftscvpayTransactionInitializeModel(object):
                     self._goods_infos.append(i)
                 else:
                     self._goods_infos.append(GoodInfo.from_alipay_dict(i))
+    @property
+    def scene(self):
+        return self._scene
+
+    @scene.setter
+    def scene(self, value):
+        self._scene = value
     @property
     def terminal_id(self):
         return self._terminal_id
@@ -54,6 +62,11 @@ class AlipayMsaasMediarecogAftscvpayTransactionInitializeModel(object):
                 params['goods_infos'] = self.goods_infos.to_alipay_dict()
             else:
                 params['goods_infos'] = self.goods_infos
+        if self.scene:
+            if hasattr(self.scene, 'to_alipay_dict'):
+                params['scene'] = self.scene.to_alipay_dict()
+            else:
+                params['scene'] = self.scene
         if self.terminal_id:
             if hasattr(self.terminal_id, 'to_alipay_dict'):
                 params['terminal_id'] = self.terminal_id.to_alipay_dict()
@@ -73,6 +86,8 @@ class AlipayMsaasMediarecogAftscvpayTransactionInitializeModel(object):
         o = AlipayMsaasMediarecogAftscvpayTransactionInitializeModel()
         if 'goods_infos' in d:
             o.goods_infos = d['goods_infos']
+        if 'scene' in d:
+            o.scene = d['scene']
         if 'terminal_id' in d:
             o.terminal_id = d['terminal_id']
         if 'transaction_id' in d:

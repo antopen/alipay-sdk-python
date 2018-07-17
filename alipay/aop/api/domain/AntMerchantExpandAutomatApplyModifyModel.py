@@ -5,6 +5,7 @@ import json
 from alipay.aop.api.constant.ParamConstants import *
 from alipay.aop.api.domain.SmartAddressInfo import SmartAddressInfo
 from alipay.aop.api.domain.SmartAddressInfo import SmartAddressInfo
+from alipay.aop.api.domain.SmartAutomatScene import SmartAutomatScene
 
 
 class AntMerchantExpandAutomatApplyModifyModel(object):
@@ -18,6 +19,7 @@ class AntMerchantExpandAutomatApplyModifyModel(object):
         self._merchant_user_id = None
         self._merchant_user_type = None
         self._point_position = None
+        self._scene = None
         self._terminal_id = None
 
     @property
@@ -83,6 +85,16 @@ class AntMerchantExpandAutomatApplyModifyModel(object):
         else:
             self._point_position = SmartAddressInfo.from_alipay_dict(value)
     @property
+    def scene(self):
+        return self._scene
+
+    @scene.setter
+    def scene(self, value):
+        if isinstance(value, SmartAutomatScene):
+            self._scene = value
+        else:
+            self._scene = SmartAutomatScene.from_alipay_dict(value)
+    @property
     def terminal_id(self):
         return self._terminal_id
 
@@ -133,6 +145,11 @@ class AntMerchantExpandAutomatApplyModifyModel(object):
                 params['point_position'] = self.point_position.to_alipay_dict()
             else:
                 params['point_position'] = self.point_position
+        if self.scene:
+            if hasattr(self.scene, 'to_alipay_dict'):
+                params['scene'] = self.scene.to_alipay_dict()
+            else:
+                params['scene'] = self.scene
         if self.terminal_id:
             if hasattr(self.terminal_id, 'to_alipay_dict'):
                 params['terminal_id'] = self.terminal_id.to_alipay_dict()
@@ -161,6 +178,8 @@ class AntMerchantExpandAutomatApplyModifyModel(object):
             o.merchant_user_type = d['merchant_user_type']
         if 'point_position' in d:
             o.point_position = d['point_position']
+        if 'scene' in d:
+            o.scene = d['scene']
         if 'terminal_id' in d:
             o.terminal_id = d['terminal_id']
         return o

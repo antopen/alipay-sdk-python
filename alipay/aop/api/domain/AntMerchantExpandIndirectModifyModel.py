@@ -20,8 +20,10 @@ class AntMerchantExpandIndirectModifyModel(object):
         self._contact_info = None
         self._external_id = None
         self._logon_id = None
+        self._mcc = None
         self._memo = None
         self._name = None
+        self._org_pid = None
         self._pay_code_info = None
         self._service_phone = None
         self._source = None
@@ -112,6 +114,13 @@ class AntMerchantExpandIndirectModifyModel(object):
             for i in value:
                 self._logon_id.append(i)
     @property
+    def mcc(self):
+        return self._mcc
+
+    @mcc.setter
+    def mcc(self, value):
+        self._mcc = value
+    @property
     def memo(self):
         return self._memo
 
@@ -125,6 +134,13 @@ class AntMerchantExpandIndirectModifyModel(object):
     @name.setter
     def name(self, value):
         self._name = value
+    @property
+    def org_pid(self):
+        return self._org_pid
+
+    @org_pid.setter
+    def org_pid(self, value):
+        self._org_pid = value
     @property
     def pay_code_info(self):
         return self._pay_code_info
@@ -225,6 +241,11 @@ class AntMerchantExpandIndirectModifyModel(object):
                 params['logon_id'] = self.logon_id.to_alipay_dict()
             else:
                 params['logon_id'] = self.logon_id
+        if self.mcc:
+            if hasattr(self.mcc, 'to_alipay_dict'):
+                params['mcc'] = self.mcc.to_alipay_dict()
+            else:
+                params['mcc'] = self.mcc
         if self.memo:
             if hasattr(self.memo, 'to_alipay_dict'):
                 params['memo'] = self.memo.to_alipay_dict()
@@ -235,6 +256,11 @@ class AntMerchantExpandIndirectModifyModel(object):
                 params['name'] = self.name.to_alipay_dict()
             else:
                 params['name'] = self.name
+        if self.org_pid:
+            if hasattr(self.org_pid, 'to_alipay_dict'):
+                params['org_pid'] = self.org_pid.to_alipay_dict()
+            else:
+                params['org_pid'] = self.org_pid
         if self.pay_code_info:
             if isinstance(self.pay_code_info, list):
                 for i in range(0, len(self.pay_code_info)):
@@ -285,10 +311,14 @@ class AntMerchantExpandIndirectModifyModel(object):
             o.external_id = d['external_id']
         if 'logon_id' in d:
             o.logon_id = d['logon_id']
+        if 'mcc' in d:
+            o.mcc = d['mcc']
         if 'memo' in d:
             o.memo = d['memo']
         if 'name' in d:
             o.name = d['name']
+        if 'org_pid' in d:
+            o.org_pid = d['org_pid']
         if 'pay_code_info' in d:
             o.pay_code_info = d['pay_code_info']
         if 'service_phone' in d:

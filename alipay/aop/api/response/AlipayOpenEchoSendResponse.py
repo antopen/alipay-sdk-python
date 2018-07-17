@@ -3,17 +3,29 @@
 import json
 
 from alipay.aop.api.response.AlipayResponse import AlipayResponse
+from alipay.aop.api.domain.MyObjectDdd import MyObjectDdd
 
 
 class AlipayOpenEchoSendResponse(AlipayResponse):
 
     def __init__(self):
         super(AlipayOpenEchoSendResponse, self).__init__()
+        self._obj = None
         self._out_a = None
         self._out_b = None
         self._out_c = None
         self._word = None
 
+    @property
+    def obj(self):
+        return self._obj
+
+    @obj.setter
+    def obj(self, value):
+        if isinstance(value, MyObjectDdd):
+            self._obj = value
+        else:
+            self._obj = MyObjectDdd.from_alipay_dict(value)
     @property
     def out_a(self):
         return self._out_a
@@ -45,6 +57,8 @@ class AlipayOpenEchoSendResponse(AlipayResponse):
 
     def parse_response_content(self, response_content):
         response = super(AlipayOpenEchoSendResponse, self).parse_response_content(response_content)
+        if 'obj' in response:
+            self.obj = response['obj']
         if 'out_a' in response:
             self.out_a = response['out_a']
         if 'out_b' in response:

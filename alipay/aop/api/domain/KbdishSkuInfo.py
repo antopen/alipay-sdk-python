@@ -14,6 +14,7 @@ class KbdishSkuInfo(object):
         self._dish_packages_detail_list = None
         self._goods_sku_id = None
         self._member_price = None
+        self._out_sku_id = None
         self._sell_price = None
         self._sku_ext_content = None
         self._sku_id = None
@@ -66,6 +67,13 @@ class KbdishSkuInfo(object):
     @member_price.setter
     def member_price(self, value):
         self._member_price = value
+    @property
+    def out_sku_id(self):
+        return self._out_sku_id
+
+    @out_sku_id.setter
+    def out_sku_id(self, value):
+        self._out_sku_id = value
     @property
     def sell_price(self):
         return self._sell_price
@@ -170,6 +178,11 @@ class KbdishSkuInfo(object):
                 params['member_price'] = self.member_price.to_alipay_dict()
             else:
                 params['member_price'] = self.member_price
+        if self.out_sku_id:
+            if hasattr(self.out_sku_id, 'to_alipay_dict'):
+                params['out_sku_id'] = self.out_sku_id.to_alipay_dict()
+            else:
+                params['out_sku_id'] = self.out_sku_id
         if self.sell_price:
             if hasattr(self.sell_price, 'to_alipay_dict'):
                 params['sell_price'] = self.sell_price.to_alipay_dict()
@@ -237,6 +250,8 @@ class KbdishSkuInfo(object):
             o.goods_sku_id = d['goods_sku_id']
         if 'member_price' in d:
             o.member_price = d['member_price']
+        if 'out_sku_id' in d:
+            o.out_sku_id = d['out_sku_id']
         if 'sell_price' in d:
             o.sell_price = d['sell_price']
         if 'sku_ext_content' in d:

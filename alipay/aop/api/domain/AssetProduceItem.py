@@ -23,7 +23,9 @@ class AssetProduceItem(object):
         self._logistics_name = None
         self._logistics_no = None
         self._memo = None
+        self._parent_template_id = None
         self._postcode = None
+        self._print_data = None
         self._produce_order = None
         self._province = None
         self._receiver_address = None
@@ -139,12 +141,26 @@ class AssetProduceItem(object):
     def memo(self, value):
         self._memo = value
     @property
+    def parent_template_id(self):
+        return self._parent_template_id
+
+    @parent_template_id.setter
+    def parent_template_id(self, value):
+        self._parent_template_id = value
+    @property
     def postcode(self):
         return self._postcode
 
     @postcode.setter
     def postcode(self, value):
         self._postcode = value
+    @property
+    def print_data(self):
+        return self._print_data
+
+    @print_data.setter
+    def print_data(self, value):
+        self._print_data = value
     @property
     def produce_order(self):
         return self._produce_order
@@ -280,11 +296,21 @@ class AssetProduceItem(object):
                 params['memo'] = self.memo.to_alipay_dict()
             else:
                 params['memo'] = self.memo
+        if self.parent_template_id:
+            if hasattr(self.parent_template_id, 'to_alipay_dict'):
+                params['parent_template_id'] = self.parent_template_id.to_alipay_dict()
+            else:
+                params['parent_template_id'] = self.parent_template_id
         if self.postcode:
             if hasattr(self.postcode, 'to_alipay_dict'):
                 params['postcode'] = self.postcode.to_alipay_dict()
             else:
                 params['postcode'] = self.postcode
+        if self.print_data:
+            if hasattr(self.print_data, 'to_alipay_dict'):
+                params['print_data'] = self.print_data.to_alipay_dict()
+            else:
+                params['print_data'] = self.print_data
         if self.produce_order:
             if hasattr(self.produce_order, 'to_alipay_dict'):
                 params['produce_order'] = self.produce_order.to_alipay_dict()
@@ -362,8 +388,12 @@ class AssetProduceItem(object):
             o.logistics_no = d['logistics_no']
         if 'memo' in d:
             o.memo = d['memo']
+        if 'parent_template_id' in d:
+            o.parent_template_id = d['parent_template_id']
         if 'postcode' in d:
             o.postcode = d['postcode']
+        if 'print_data' in d:
+            o.print_data = d['print_data']
         if 'produce_order' in d:
             o.produce_order = d['produce_order']
         if 'province' in d:

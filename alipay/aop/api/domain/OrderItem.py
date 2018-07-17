@@ -19,6 +19,8 @@ class OrderItem(object):
         self._expire_date = None
         self._merchant_name = None
         self._merchant_pid = None
+        self._mini_app_id = None
+        self._mini_app_name = None
         self._online_time = None
         self._order_status = None
         self._phone_no = None
@@ -105,6 +107,20 @@ class OrderItem(object):
     @merchant_pid.setter
     def merchant_pid(self, value):
         self._merchant_pid = value
+    @property
+    def mini_app_id(self):
+        return self._mini_app_id
+
+    @mini_app_id.setter
+    def mini_app_id(self, value):
+        self._mini_app_id = value
+    @property
+    def mini_app_name(self):
+        return self._mini_app_name
+
+    @mini_app_name.setter
+    def mini_app_name(self, value):
+        self._mini_app_name = value
     @property
     def online_time(self):
         return self._online_time
@@ -220,6 +236,16 @@ class OrderItem(object):
                 params['merchant_pid'] = self.merchant_pid.to_alipay_dict()
             else:
                 params['merchant_pid'] = self.merchant_pid
+        if self.mini_app_id:
+            if hasattr(self.mini_app_id, 'to_alipay_dict'):
+                params['mini_app_id'] = self.mini_app_id.to_alipay_dict()
+            else:
+                params['mini_app_id'] = self.mini_app_id
+        if self.mini_app_name:
+            if hasattr(self.mini_app_name, 'to_alipay_dict'):
+                params['mini_app_name'] = self.mini_app_name.to_alipay_dict()
+            else:
+                params['mini_app_name'] = self.mini_app_name
         if self.online_time:
             if hasattr(self.online_time, 'to_alipay_dict'):
                 params['online_time'] = self.online_time.to_alipay_dict()
@@ -289,6 +315,10 @@ class OrderItem(object):
             o.merchant_name = d['merchant_name']
         if 'merchant_pid' in d:
             o.merchant_pid = d['merchant_pid']
+        if 'mini_app_id' in d:
+            o.mini_app_id = d['mini_app_id']
+        if 'mini_app_name' in d:
+            o.mini_app_name = d['mini_app_name']
         if 'online_time' in d:
             o.online_time = d['online_time']
         if 'order_status' in d:

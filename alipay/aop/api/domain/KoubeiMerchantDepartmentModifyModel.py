@@ -11,6 +11,7 @@ class KoubeiMerchantDepartmentModifyModel(object):
         self._auth_code = None
         self._dept_id = None
         self._dept_name = None
+        self._label_code = None
         self._parent_dept_id = None
 
     @property
@@ -34,6 +35,13 @@ class KoubeiMerchantDepartmentModifyModel(object):
     @dept_name.setter
     def dept_name(self, value):
         self._dept_name = value
+    @property
+    def label_code(self):
+        return self._label_code
+
+    @label_code.setter
+    def label_code(self, value):
+        self._label_code = value
     @property
     def parent_dept_id(self):
         return self._parent_dept_id
@@ -60,6 +68,11 @@ class KoubeiMerchantDepartmentModifyModel(object):
                 params['dept_name'] = self.dept_name.to_alipay_dict()
             else:
                 params['dept_name'] = self.dept_name
+        if self.label_code:
+            if hasattr(self.label_code, 'to_alipay_dict'):
+                params['label_code'] = self.label_code.to_alipay_dict()
+            else:
+                params['label_code'] = self.label_code
         if self.parent_dept_id:
             if hasattr(self.parent_dept_id, 'to_alipay_dict'):
                 params['parent_dept_id'] = self.parent_dept_id.to_alipay_dict()
@@ -78,6 +91,8 @@ class KoubeiMerchantDepartmentModifyModel(object):
             o.dept_id = d['dept_id']
         if 'dept_name' in d:
             o.dept_name = d['dept_name']
+        if 'label_code' in d:
+            o.label_code = d['label_code']
         if 'parent_dept_id' in d:
             o.parent_dept_id = d['parent_dept_id']
         return o

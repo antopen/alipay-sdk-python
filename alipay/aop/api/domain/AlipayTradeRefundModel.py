@@ -4,6 +4,7 @@ import json
 
 from alipay.aop.api.constant.ParamConstants import *
 from alipay.aop.api.domain.GoodsDetail import GoodsDetail
+from alipay.aop.api.domain.OpenApiRoyaltyDetailInfoPojo import OpenApiRoyaltyDetailInfoPojo
 
 
 class AlipayTradeRefundModel(object):
@@ -16,6 +17,7 @@ class AlipayTradeRefundModel(object):
         self._refund_amount = None
         self._refund_currency = None
         self._refund_reason = None
+        self._refund_royalty_parameters = None
         self._store_id = None
         self._terminal_id = None
         self._trade_no = None
@@ -75,6 +77,19 @@ class AlipayTradeRefundModel(object):
     @refund_reason.setter
     def refund_reason(self, value):
         self._refund_reason = value
+    @property
+    def refund_royalty_parameters(self):
+        return self._refund_royalty_parameters
+
+    @refund_royalty_parameters.setter
+    def refund_royalty_parameters(self, value):
+        if isinstance(value, list):
+            self._refund_royalty_parameters = list()
+            for i in value:
+                if isinstance(i, OpenApiRoyaltyDetailInfoPojo):
+                    self._refund_royalty_parameters.append(i)
+                else:
+                    self._refund_royalty_parameters.append(OpenApiRoyaltyDetailInfoPojo.from_alipay_dict(i))
     @property
     def store_id(self):
         return self._store_id
@@ -140,6 +155,16 @@ class AlipayTradeRefundModel(object):
                 params['refund_reason'] = self.refund_reason.to_alipay_dict()
             else:
                 params['refund_reason'] = self.refund_reason
+        if self.refund_royalty_parameters:
+            if isinstance(self.refund_royalty_parameters, list):
+                for i in range(0, len(self.refund_royalty_parameters)):
+                    element = self.refund_royalty_parameters[i]
+                    if hasattr(element, 'to_alipay_dict'):
+                        self.refund_royalty_parameters[i] = element.to_alipay_dict()
+            if hasattr(self.refund_royalty_parameters, 'to_alipay_dict'):
+                params['refund_royalty_parameters'] = self.refund_royalty_parameters.to_alipay_dict()
+            else:
+                params['refund_royalty_parameters'] = self.refund_royalty_parameters
         if self.store_id:
             if hasattr(self.store_id, 'to_alipay_dict'):
                 params['store_id'] = self.store_id.to_alipay_dict()
@@ -176,6 +201,8 @@ class AlipayTradeRefundModel(object):
             o.refund_currency = d['refund_currency']
         if 'refund_reason' in d:
             o.refund_reason = d['refund_reason']
+        if 'refund_royalty_parameters' in d:
+            o.refund_royalty_parameters = d['refund_royalty_parameters']
         if 'store_id' in d:
             o.store_id = d['store_id']
         if 'terminal_id' in d:

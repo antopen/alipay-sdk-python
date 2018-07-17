@@ -19,6 +19,7 @@ class ZhimaCreditEpFreedepositInitializeModel(object):
         self._goto_url = None
         self._merchant_order_no = None
         self._name = None
+        self._out_request_no = None
         self._product_code = None
         self._request_id = None
 
@@ -100,6 +101,13 @@ class ZhimaCreditEpFreedepositInitializeModel(object):
     def name(self, value):
         self._name = value
     @property
+    def out_request_no(self):
+        return self._out_request_no
+
+    @out_request_no.setter
+    def out_request_no(self, value):
+        self._out_request_no = value
+    @property
     def product_code(self):
         return self._product_code
 
@@ -172,6 +180,11 @@ class ZhimaCreditEpFreedepositInitializeModel(object):
                 params['name'] = self.name.to_alipay_dict()
             else:
                 params['name'] = self.name
+        if self.out_request_no:
+            if hasattr(self.out_request_no, 'to_alipay_dict'):
+                params['out_request_no'] = self.out_request_no.to_alipay_dict()
+            else:
+                params['out_request_no'] = self.out_request_no
         if self.product_code:
             if hasattr(self.product_code, 'to_alipay_dict'):
                 params['product_code'] = self.product_code.to_alipay_dict()
@@ -211,6 +224,8 @@ class ZhimaCreditEpFreedepositInitializeModel(object):
             o.merchant_order_no = d['merchant_order_no']
         if 'name' in d:
             o.name = d['name']
+        if 'out_request_no' in d:
+            o.out_request_no = d['out_request_no']
         if 'product_code' in d:
             o.product_code = d['product_code']
         if 'request_id' in d:

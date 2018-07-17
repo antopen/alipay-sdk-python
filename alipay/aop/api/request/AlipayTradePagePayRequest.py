@@ -85,7 +85,7 @@ class AlipayTradePagePayRequest(object):
 
     @property
     def return_url(self):
-        return self._notify_url
+        return self._return_url
 
     @return_url.setter
     def return_url(self, value):

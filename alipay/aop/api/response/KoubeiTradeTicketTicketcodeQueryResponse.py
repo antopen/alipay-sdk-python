@@ -10,6 +10,7 @@ class KoubeiTradeTicketTicketcodeQueryResponse(AlipayResponse):
 
     def __init__(self):
         super(KoubeiTradeTicketTicketcodeQueryResponse, self).__init__()
+        self._available_quantity = None
         self._current_price = None
         self._effect_date = None
         self._expire_date = None
@@ -21,8 +22,16 @@ class KoubeiTradeTicketTicketcodeQueryResponse(AlipayResponse):
         self._ticket_status = None
         self._ticket_status_desc = None
         self._ticket_trans_info_list = None
+        self._time_cards = None
         self._voucher_id = None
 
+    @property
+    def available_quantity(self):
+        return self._available_quantity
+
+    @available_quantity.setter
+    def available_quantity(self, value):
+        self._available_quantity = value
     @property
     def current_price(self):
         return self._current_price
@@ -107,6 +116,13 @@ class KoubeiTradeTicketTicketcodeQueryResponse(AlipayResponse):
                 else:
                     self._ticket_trans_info_list.append(TicketTransInfo.from_alipay_dict(i))
     @property
+    def time_cards(self):
+        return self._time_cards
+
+    @time_cards.setter
+    def time_cards(self, value):
+        self._time_cards = value
+    @property
     def voucher_id(self):
         return self._voucher_id
 
@@ -116,6 +132,8 @@ class KoubeiTradeTicketTicketcodeQueryResponse(AlipayResponse):
 
     def parse_response_content(self, response_content):
         response = super(KoubeiTradeTicketTicketcodeQueryResponse, self).parse_response_content(response_content)
+        if 'available_quantity' in response:
+            self.available_quantity = response['available_quantity']
         if 'current_price' in response:
             self.current_price = response['current_price']
         if 'effect_date' in response:
@@ -138,5 +156,7 @@ class KoubeiTradeTicketTicketcodeQueryResponse(AlipayResponse):
             self.ticket_status_desc = response['ticket_status_desc']
         if 'ticket_trans_info_list' in response:
             self.ticket_trans_info_list = response['ticket_trans_info_list']
+        if 'time_cards' in response:
+            self.time_cards = response['time_cards']
         if 'voucher_id' in response:
             self.voucher_id = response['voucher_id']

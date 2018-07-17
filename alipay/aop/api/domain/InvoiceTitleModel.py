@@ -13,6 +13,7 @@ class InvoiceTitleModel(object):
         self._open_bank_account = None
         self._open_bank_name = None
         self._tax_register_no = None
+        self._tele_phone_no = None
         self._title_name = None
         self._title_type = None
         self._user_address = None
@@ -55,6 +56,13 @@ class InvoiceTitleModel(object):
     @tax_register_no.setter
     def tax_register_no(self, value):
         self._tax_register_no = value
+    @property
+    def tele_phone_no(self):
+        return self._tele_phone_no
+
+    @tele_phone_no.setter
+    def tele_phone_no(self, value):
+        self._tele_phone_no = value
     @property
     def title_name(self):
         return self._title_name
@@ -126,6 +134,11 @@ class InvoiceTitleModel(object):
                 params['tax_register_no'] = self.tax_register_no.to_alipay_dict()
             else:
                 params['tax_register_no'] = self.tax_register_no
+        if self.tele_phone_no:
+            if hasattr(self.tele_phone_no, 'to_alipay_dict'):
+                params['tele_phone_no'] = self.tele_phone_no.to_alipay_dict()
+            else:
+                params['tele_phone_no'] = self.tele_phone_no
         if self.title_name:
             if hasattr(self.title_name, 'to_alipay_dict'):
                 params['title_name'] = self.title_name.to_alipay_dict()
@@ -173,6 +186,8 @@ class InvoiceTitleModel(object):
             o.open_bank_name = d['open_bank_name']
         if 'tax_register_no' in d:
             o.tax_register_no = d['tax_register_no']
+        if 'tele_phone_no' in d:
+            o.tele_phone_no = d['tele_phone_no']
         if 'title_name' in d:
             o.title_name = d['title_name']
         if 'title_type' in d:

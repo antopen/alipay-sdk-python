@@ -12,6 +12,7 @@ class AlipayOpenPublicMessageCustomSendModel(object):
     def __init__(self):
         self._articles = None
         self._chat = None
+        self._event_type = None
         self._msg_type = None
         self._text = None
         self._to_user_id = None
@@ -36,6 +37,13 @@ class AlipayOpenPublicMessageCustomSendModel(object):
     @chat.setter
     def chat(self, value):
         self._chat = value
+    @property
+    def event_type(self):
+        return self._event_type
+
+    @event_type.setter
+    def event_type(self, value):
+        self._event_type = value
     @property
     def msg_type(self):
         return self._msg_type
@@ -79,6 +87,11 @@ class AlipayOpenPublicMessageCustomSendModel(object):
                 params['chat'] = self.chat.to_alipay_dict()
             else:
                 params['chat'] = self.chat
+        if self.event_type:
+            if hasattr(self.event_type, 'to_alipay_dict'):
+                params['event_type'] = self.event_type.to_alipay_dict()
+            else:
+                params['event_type'] = self.event_type
         if self.msg_type:
             if hasattr(self.msg_type, 'to_alipay_dict'):
                 params['msg_type'] = self.msg_type.to_alipay_dict()
@@ -105,6 +118,8 @@ class AlipayOpenPublicMessageCustomSendModel(object):
             o.articles = d['articles']
         if 'chat' in d:
             o.chat = d['chat']
+        if 'event_type' in d:
+            o.event_type = d['event_type']
         if 'msg_type' in d:
             o.msg_type = d['msg_type']
         if 'text' in d:

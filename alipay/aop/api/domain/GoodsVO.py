@@ -21,10 +21,14 @@ class GoodsVO(object):
         self._last_operator = None
         self._origin_price = None
         self._price = None
+        self._produce_price = None
+        self._producer_id = None
+        self._producer_name = None
         self._sale_limit = None
         self._specifications = None
         self._storage_time = None
         self._supplier_id = None
+        self._tax_rate = None
 
     @property
     def addition_desc(self):
@@ -118,6 +122,27 @@ class GoodsVO(object):
     def price(self, value):
         self._price = value
     @property
+    def produce_price(self):
+        return self._produce_price
+
+    @produce_price.setter
+    def produce_price(self, value):
+        self._produce_price = value
+    @property
+    def producer_id(self):
+        return self._producer_id
+
+    @producer_id.setter
+    def producer_id(self, value):
+        self._producer_id = value
+    @property
+    def producer_name(self):
+        return self._producer_name
+
+    @producer_name.setter
+    def producer_name(self, value):
+        self._producer_name = value
+    @property
     def sale_limit(self):
         return self._sale_limit
 
@@ -145,6 +170,13 @@ class GoodsVO(object):
     @supplier_id.setter
     def supplier_id(self, value):
         self._supplier_id = value
+    @property
+    def tax_rate(self):
+        return self._tax_rate
+
+    @tax_rate.setter
+    def tax_rate(self, value):
+        self._tax_rate = value
 
 
     def to_alipay_dict(self):
@@ -214,6 +246,21 @@ class GoodsVO(object):
                 params['price'] = self.price.to_alipay_dict()
             else:
                 params['price'] = self.price
+        if self.produce_price:
+            if hasattr(self.produce_price, 'to_alipay_dict'):
+                params['produce_price'] = self.produce_price.to_alipay_dict()
+            else:
+                params['produce_price'] = self.produce_price
+        if self.producer_id:
+            if hasattr(self.producer_id, 'to_alipay_dict'):
+                params['producer_id'] = self.producer_id.to_alipay_dict()
+            else:
+                params['producer_id'] = self.producer_id
+        if self.producer_name:
+            if hasattr(self.producer_name, 'to_alipay_dict'):
+                params['producer_name'] = self.producer_name.to_alipay_dict()
+            else:
+                params['producer_name'] = self.producer_name
         if self.sale_limit:
             if hasattr(self.sale_limit, 'to_alipay_dict'):
                 params['sale_limit'] = self.sale_limit.to_alipay_dict()
@@ -234,6 +281,11 @@ class GoodsVO(object):
                 params['supplier_id'] = self.supplier_id.to_alipay_dict()
             else:
                 params['supplier_id'] = self.supplier_id
+        if self.tax_rate:
+            if hasattr(self.tax_rate, 'to_alipay_dict'):
+                params['tax_rate'] = self.tax_rate.to_alipay_dict()
+            else:
+                params['tax_rate'] = self.tax_rate
         return params
 
     @staticmethod
@@ -267,6 +319,12 @@ class GoodsVO(object):
             o.origin_price = d['origin_price']
         if 'price' in d:
             o.price = d['price']
+        if 'produce_price' in d:
+            o.produce_price = d['produce_price']
+        if 'producer_id' in d:
+            o.producer_id = d['producer_id']
+        if 'producer_name' in d:
+            o.producer_name = d['producer_name']
         if 'sale_limit' in d:
             o.sale_limit = d['sale_limit']
         if 'specifications' in d:
@@ -275,6 +333,8 @@ class GoodsVO(object):
             o.storage_time = d['storage_time']
         if 'supplier_id' in d:
             o.supplier_id = d['supplier_id']
+        if 'tax_rate' in d:
+            o.tax_rate = d['tax_rate']
         return o
 
 

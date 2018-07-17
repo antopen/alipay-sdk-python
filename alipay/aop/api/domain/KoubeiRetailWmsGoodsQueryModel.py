@@ -16,6 +16,7 @@ class KoubeiRetailWmsGoodsQueryModel(object):
         self._operate_context = None
         self._page_no = None
         self._page_size = None
+        self._producer_id = None
         self._supplier_id = None
 
     @property
@@ -71,6 +72,13 @@ class KoubeiRetailWmsGoodsQueryModel(object):
     def page_size(self, value):
         self._page_size = value
     @property
+    def producer_id(self):
+        return self._producer_id
+
+    @producer_id.setter
+    def producer_id(self, value):
+        self._producer_id = value
+    @property
     def supplier_id(self):
         return self._supplier_id
 
@@ -116,6 +124,11 @@ class KoubeiRetailWmsGoodsQueryModel(object):
                 params['page_size'] = self.page_size.to_alipay_dict()
             else:
                 params['page_size'] = self.page_size
+        if self.producer_id:
+            if hasattr(self.producer_id, 'to_alipay_dict'):
+                params['producer_id'] = self.producer_id.to_alipay_dict()
+            else:
+                params['producer_id'] = self.producer_id
         if self.supplier_id:
             if hasattr(self.supplier_id, 'to_alipay_dict'):
                 params['supplier_id'] = self.supplier_id.to_alipay_dict()
@@ -142,6 +155,8 @@ class KoubeiRetailWmsGoodsQueryModel(object):
             o.page_no = d['page_no']
         if 'page_size' in d:
             o.page_size = d['page_size']
+        if 'producer_id' in d:
+            o.producer_id = d['producer_id']
         if 'supplier_id' in d:
             o.supplier_id = d['supplier_id']
         return o

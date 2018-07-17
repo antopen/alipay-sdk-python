@@ -12,6 +12,8 @@ class DepartmentDTO(object):
         self._dept_id = None
         self._dept_name = None
         self._dept_path = None
+        self._label_code = None
+        self._label_name = None
         self._parent_dept_id = None
         self._shop_id = None
         self._type = None
@@ -44,6 +46,20 @@ class DepartmentDTO(object):
     @dept_path.setter
     def dept_path(self, value):
         self._dept_path = value
+    @property
+    def label_code(self):
+        return self._label_code
+
+    @label_code.setter
+    def label_code(self, value):
+        self._label_code = value
+    @property
+    def label_name(self):
+        return self._label_name
+
+    @label_name.setter
+    def label_name(self, value):
+        self._label_name = value
     @property
     def parent_dept_id(self):
         return self._parent_dept_id
@@ -89,6 +105,16 @@ class DepartmentDTO(object):
                 params['dept_path'] = self.dept_path.to_alipay_dict()
             else:
                 params['dept_path'] = self.dept_path
+        if self.label_code:
+            if hasattr(self.label_code, 'to_alipay_dict'):
+                params['label_code'] = self.label_code.to_alipay_dict()
+            else:
+                params['label_code'] = self.label_code
+        if self.label_name:
+            if hasattr(self.label_name, 'to_alipay_dict'):
+                params['label_name'] = self.label_name.to_alipay_dict()
+            else:
+                params['label_name'] = self.label_name
         if self.parent_dept_id:
             if hasattr(self.parent_dept_id, 'to_alipay_dict'):
                 params['parent_dept_id'] = self.parent_dept_id.to_alipay_dict()
@@ -119,6 +145,10 @@ class DepartmentDTO(object):
             o.dept_name = d['dept_name']
         if 'dept_path' in d:
             o.dept_path = d['dept_path']
+        if 'label_code' in d:
+            o.label_code = d['label_code']
+        if 'label_name' in d:
+            o.label_name = d['label_name']
         if 'parent_dept_id' in d:
             o.parent_dept_id = d['parent_dept_id']
         if 'shop_id' in d:

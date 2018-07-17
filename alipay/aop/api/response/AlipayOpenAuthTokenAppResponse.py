@@ -3,6 +3,7 @@
 import json
 
 from alipay.aop.api.response.AlipayResponse import AlipayResponse
+from alipay.aop.api.domain.AppTokenExchangeSubElement import AppTokenExchangeSubElement
 
 
 class AlipayOpenAuthTokenAppResponse(AlipayResponse):
@@ -14,6 +15,7 @@ class AlipayOpenAuthTokenAppResponse(AlipayResponse):
         self._auth_app_id = None
         self._expires_in = None
         self._re_expires_in = None
+        self._tokens = None
         self._user_id = None
 
     @property
@@ -52,6 +54,19 @@ class AlipayOpenAuthTokenAppResponse(AlipayResponse):
     def re_expires_in(self, value):
         self._re_expires_in = value
     @property
+    def tokens(self):
+        return self._tokens
+
+    @tokens.setter
+    def tokens(self, value):
+        if isinstance(value, list):
+            self._tokens = list()
+            for i in value:
+                if isinstance(i, AppTokenExchangeSubElement):
+                    self._tokens.append(i)
+                else:
+                    self._tokens.append(AppTokenExchangeSubElement.from_alipay_dict(i))
+    @property
     def user_id(self):
         return self._user_id
 
@@ -71,5 +86,7 @@ class AlipayOpenAuthTokenAppResponse(AlipayResponse):
             self.expires_in = response['expires_in']
         if 're_expires_in' in response:
             self.re_expires_in = response['re_expires_in']
+        if 'tokens' in response:
+            self.tokens = response['tokens']
         if 'user_id' in response:
             self.user_id = response['user_id']

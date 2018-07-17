@@ -11,6 +11,7 @@ class AssetDeliveryDetail(object):
     def __init__(self):
         self._amount = None
         self._assign_item_id = None
+        self._batch_no = None
         self._logistics_infos = None
 
     @property
@@ -27,6 +28,13 @@ class AssetDeliveryDetail(object):
     @assign_item_id.setter
     def assign_item_id(self, value):
         self._assign_item_id = value
+    @property
+    def batch_no(self):
+        return self._batch_no
+
+    @batch_no.setter
+    def batch_no(self, value):
+        self._batch_no = value
     @property
     def logistics_infos(self):
         return self._logistics_infos
@@ -54,6 +62,11 @@ class AssetDeliveryDetail(object):
                 params['assign_item_id'] = self.assign_item_id.to_alipay_dict()
             else:
                 params['assign_item_id'] = self.assign_item_id
+        if self.batch_no:
+            if hasattr(self.batch_no, 'to_alipay_dict'):
+                params['batch_no'] = self.batch_no.to_alipay_dict()
+            else:
+                params['batch_no'] = self.batch_no
         if self.logistics_infos:
             if isinstance(self.logistics_infos, list):
                 for i in range(0, len(self.logistics_infos)):
@@ -75,6 +88,8 @@ class AssetDeliveryDetail(object):
             o.amount = d['amount']
         if 'assign_item_id' in d:
             o.assign_item_id = d['assign_item_id']
+        if 'batch_no' in d:
+            o.batch_no = d['batch_no']
         if 'logistics_infos' in d:
             o.logistics_infos = d['logistics_infos']
         return o
